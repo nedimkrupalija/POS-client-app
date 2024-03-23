@@ -29,7 +29,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   height:100vh;
-  background: linear-gradient(#cacaca, #9c9c9c);
+  background: linear-gradient(#e1e1e1, #c4c4c4);
 }
 
 h1 {
@@ -55,6 +55,8 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+
 
 @media (prefers-color-scheme: light) {
   :root {
