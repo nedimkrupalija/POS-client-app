@@ -22,7 +22,7 @@
 }
 
 .text{
-    color:#3c009d;
+    color:#62b5dc;
     font-size: 48px;
     font-weight: 700;
 }
@@ -30,7 +30,7 @@
 .underline{
     width:61px;
     height:6px;
-    background: #3c009d;
+    background: #62b5dc;
     border-radius: 9px;
 }
 .inputs{
@@ -46,7 +46,7 @@
     margin:auto;
     width:480px;
     height:80px;
-    background: #eaeaea;
+    background: #e1d6d6;
     border-radius:6px;
 }
 
@@ -60,7 +60,7 @@
     background:transparent;
     border:none;
     outline:none;
-    color:#797979;
+    color:#e1d6d6;
     font-size:19px;
 }
 
@@ -77,7 +77,7 @@
     width:220px;
     height:59px;
     color:#fff;
-    background:#4c00b4;
+    background:#72b5dc;
     border-radius:50px;
     font-size:19px;
     font-weight:700;
