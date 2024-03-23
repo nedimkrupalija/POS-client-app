@@ -34,11 +34,6 @@ const Login = () => {
 
 export default Login
 
-
-
-
-
-
 //-------//
 
 // LoginForm.js
