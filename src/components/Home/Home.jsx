@@ -9,7 +9,6 @@ const Home = () => {
 
     const handleLogout = () => {
     Cookies.remove('jwt');
-    console.log("uslo");
     setLoggedIn(false);
 };
 if (!loggedIn) {
