@@ -12,17 +12,18 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const LOGIN_URL= 'http://localhost:3000/auth/login';
-    const ROLE='user';
+    const ROLE="user";
+    const [loggedIn, setLoggedIn] = useState(false);
+
     const handleLogin = async (event) => {
         event.preventDefault();
-
         if (!email || !password) {
             setErrorMessage('Molimo unesite email i lozinku.');
             return;
         }
 
         try {
-            const response = await axios.post(
+           axios.post(
                 LOGIN_URL,
                 {
                     username: email,
@@ -34,17 +35,21 @@ const Login = () => {
                         'Content-Type': 'application/json',
                     }
                 }
-            );
-
-            const token = response.data.token;
+            ).then(response=>{
+                   const token = response.data.token;
             Cookies.set('jwt', token);
-            setErrorMessage('');
+setLoggedIn(true);
+            });
+
+         
         } catch (error) {
-            console.error(error);
+            //console.error(error);
             setErrorMessage('Pogrešno korisničko ime ili lozinka.');
         }
     };
-
+if(loggedIn){
+return <Home />;
+}
     return (
         <div className="container">
             <div className="header">

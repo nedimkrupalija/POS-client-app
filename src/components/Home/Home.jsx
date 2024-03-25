@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Home.css';
 import Login from '../Login/Login';
+import Cookies from 'js-cookie';
 
 
 const Home = () => {
@@ -8,8 +9,8 @@ const Home = () => {
 
     const handleLogout = () => {
     Cookies.remove('jwt');
+    console.log("uslo");
     setLoggedIn(false);
-
 };
 if (!loggedIn) {
     return <Login />;
