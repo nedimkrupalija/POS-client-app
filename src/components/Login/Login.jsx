@@ -36,12 +36,10 @@ const Login = () => {
                     }
                 }
             ).then(response=>{
-                   const token = response.data.token;
-            Cookies.set('jwt', token);
-setLoggedIn(true);
-            }).catch(error=>{
-            setErrorMessage('Pogrešno korisničko ime ili lozinka.');
-                
+
+                //Setting token into cookie
+                Cookies.set('jwtToken', response.data.token, {path: '/' });
+                setLoggedIn(true);
             });
 
          
