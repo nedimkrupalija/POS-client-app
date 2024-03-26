@@ -36,9 +36,9 @@ const Login = () => {
                     }
                 }
             ).then(response=>{
-                   const token = response.data.token;
-            Cookies.set('jwt', token);
-setLoggedIn(true);
+                //Setting token into cookie
+                Cookies.set('jwtToken', response.data.token, {path: '/' });
+                setLoggedIn(true);
             });
 
          
