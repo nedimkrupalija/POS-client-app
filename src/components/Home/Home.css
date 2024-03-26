@@ -1,0 +1,65 @@
+#meni {
+    background-color: #62b5dc;
+    position: fixed;
+    width: 100%;
+    height: 8.5%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#linkoviDiv {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+
+#logoutDiv {
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+}
+
+#logout, #logolinkoviut {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#logout li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+#logout li button {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+}
+
+#logout li button:hover, #logolinkoviut li a:hover {
+    color: #FFF;
+    text-decoration: none;
+}
+
+#logolinkoviut li {
+    margin-right: 10px;
+}
+
+#logolinkoviut li:last-child {
+    margin-right: 0; /* Uklanja margine sa desne strane poslednje stavke */
+}
+
+#logolinkoviut a {
+    text-decoration: none;
+    color: white;
+}
