@@ -11,27 +11,28 @@
 }
 
 #linkoviDiv {
-    width: 100%;
+    width: 50%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: right;
     align-items: center;
 }
+
 
 #logoutDiv {
     display: flex;
     align-items: center;
     padding-right: 10px;
-    width: 10%;
-    height: 100%;
 }
 
-#logout, #linkovi {
+#logout, #logolinkoviut {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 #logout li {
-    display: inline;
+    display: inline-block;
     margin-right: 10px;
 }
 
@@ -45,16 +46,20 @@
     background-color: transparent;
 }
 
-#logout li button:hover, #linkoviDiv a:hover {
+#logout li button:hover, #logolinkoviut li a:hover {
     color: #FFF;
     text-decoration: none;
 }
 
-#linkoviDiv a {
-    text-decoration: none;
-    color: white; /* Boja teksta */
+#logolinkoviut li {
+    margin-right: 10px;
 }
 
-#logolinkoviut {
-    list-style-type: none; /* Uklanja tačku ispred teksta */
+#logolinkoviut li:last-child {
+    margin-right: 0; /* Uklanja margine sa desne strane poslednje stavke */
+}
+
+#logolinkoviut a {
+    text-decoration: none;
+    color: white;
 }
