@@ -11,7 +11,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const LOGIN_URL= 'https://pos-app-backend-tim56.onrender.com/auth/login';
+    const LOGIN_URL= 'http://localhost:3000/auth/login';
     const ROLE="user";
     const [loggedIn, setLoggedIn] = useState(false);
 
@@ -39,6 +39,9 @@ const Login = () => {
                    const token = response.data.token;
             Cookies.set('jwt', token);
 setLoggedIn(true);
+            }).catch(error=>{
+            setErrorMessage('Pogrešno korisničko ime ili lozinka.');
+                
             });
 
          
