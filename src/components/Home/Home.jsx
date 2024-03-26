@@ -14,6 +14,10 @@ const Home = () => {
 if (!loggedIn) {
     return <Login />;
 }
+const handleManagerApp=()=>{
+    Cookies.remove('jwt');
+    window.location.href = "https://pos-staff-app-tim56.vercel.app/";
+}
   return (
     <header id="meni">
         <div id='linkoviDiv'>
@@ -24,8 +28,8 @@ if (!loggedIn) {
         <div id='logoutDiv'>
             <ul id="logout">
                 <li><button onClick={handleLogout}>Logout</button></li>
-               {/* <li><button onClick={() => window.location.href = "https://pos-employees-app-tim56.vercel.app"}>
-                Manager app  </button> </li>*/}
+               {<li><button onClick={handleManagerApp}>
+                Manager app  </button> </li>}
                 
             </ul>
         </div>
