@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.3",
+    "@rollup/rollup-linux-x64-gnu": "4.10.0",
     "@babel/preset-env": "^7.24.3",
     "@babel/preset-react": "^7.24.1",
     "@testing-library/react": "^14.2.2",
