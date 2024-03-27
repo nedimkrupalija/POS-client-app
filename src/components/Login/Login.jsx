@@ -8,7 +8,7 @@ import errorIcon from '../../assets/error-icon-32.png';
 import './Login.css';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const LOGIN_URL= 'https://pos-app-backend-tim56.onrender.com/auth/login';
@@ -17,8 +17,8 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        if (!email || !password) {
-            setErrorMessage('Molimo unesite email i lozinku.');
+        if (!username || !password) {
+            setErrorMessage('Molimo unesite username i lozinku.');
             return;
         }
 
@@ -26,7 +26,7 @@ const Login = () => {
            axios.post(
                 LOGIN_URL,
                 {
-                    username: email,
+                    username: username,
                     password: password,
                     role: ROLE
                 },
@@ -36,8 +36,11 @@ const Login = () => {
                     }
                 }
             ).then(response=>{
+                const endOfToday = new Date();
+                endOfToday.setHours(23, 59, 59, 999); 
+                const expiresIn = Math.ceil((endOfToday.getTime() - Date.now()) / 1000); 
                    const token = response.data.token;
-            Cookies.set('jwt', token);
+            Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
 setLoggedIn(true);
             }).catch(error=>{
             setErrorMessage('Pogrešno korisničko ime ili lozinka.');
@@ -71,9 +74,9 @@ return <Home />;
                     <img src={personIcon} alt="" />
                     <input
                         type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                 </div>
 
