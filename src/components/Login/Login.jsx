@@ -17,37 +17,44 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        try {
-           axios.post(
-                LOGIN_URL,
-                {
-                    username: username,
-                    password: pin,
-                    role: ROLE
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                }
+        
+           fetch(LOGIN_URL,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body : JSON.stringify({
+                username: username,
+                password: pin,
+                role: ROLE
+           }
+           )}
+               
+                
             ).then(response=>{
+                if(response.ok){
+                    return response.json();
+                }
+                else{
+                    return response.json().then(data=>{
+                        throw new Error(data.message);
+                    });
+                }
+            }).then(data => {
                 const endOfToday = new Date();
                 endOfToday.setHours(23, 59, 59, 999); 
                 const expiresIn = Math.ceil((endOfToday.getTime() - Date.now()) / 1000); 
-                   const token = response.data.token;
+                   const token = data.token;
 
-            Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
-setLoggedIn(true);
-
-            }).catch(error=>{
-            setErrorMessage(error.response.data.message);
-                
+                    Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
+                setLoggedIn(true);
+            }).catch(error => {
+                console.log(error);
+                setErrorMessage(error.message);
             });
-
+        
          
-        } catch (error) {
-            setErrorMessage(error);
-        }
+        
     };
 if(loggedIn){
 return <Home />;
