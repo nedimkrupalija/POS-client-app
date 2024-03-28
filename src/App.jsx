@@ -12,11 +12,6 @@ function App() {
   return (
       <div>
         {isLoggedIn ? <Home /> : <Login />}     </div>
-     /*<div>
-      <Home/>
-     </div>*/
-      
-  
   )
   }
 export default App
