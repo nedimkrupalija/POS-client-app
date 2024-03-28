@@ -8,8 +8,8 @@ import errorIcon from '../../assets/error-icon-32.png';
 import './Login.css';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
+    const [pin, setPin] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const LOGIN_URL= 'https://pos-app-backend-tim56.onrender.com/auth/login';
     const ROLE="user";
@@ -17,17 +17,12 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        if (!email || !password) {
-            setErrorMessage('Molimo unesite email i lozinku.');
-            return;
-        }
-
         try {
            axios.post(
                 LOGIN_URL,
                 {
-                    username: email,
-                    password: password,
+                    username: username,
+                    password: pin,
                     role: ROLE
                 },
                 {
@@ -36,17 +31,22 @@ const Login = () => {
                     }
                 }
             ).then(response=>{
+                const endOfToday = new Date();
+                endOfToday.setHours(23, 59, 59, 999); 
+                const expiresIn = Math.ceil((endOfToday.getTime() - Date.now()) / 1000); 
                    const token = response.data.token;
-            Cookies.set('jwt', token);
-            setLoggedIn(true);
+
+            Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
+setLoggedIn(true);
+
             }).catch(error=>{
-            setErrorMessage('Pogrešno korisničko ime ili lozinka.');
+            setErrorMessage(error.response.data.message);
                 
             });
 
          
         } catch (error) {
-            setErrorMessage('Pogrešno korisničko ime ili lozinka.');
+            setErrorMessage(error);
         }
     };
 if(loggedIn){
@@ -71,9 +71,9 @@ return <Home />;
                     <img src={personIcon} alt="" />
                     <input
                         type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                 </div>
 
@@ -81,9 +81,9 @@ return <Home />;
                     <img src={passIcon} alt="" />
                     <input
                         type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="PIN"
+                        value={pin}
+                        onChange={(e) => setPin(e.target.value)}
                     />
                 </div>
             </div>
