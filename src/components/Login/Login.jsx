@@ -17,11 +17,6 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        if (!username || !password) {
-            setErrorMessage('Molimo unesite username i lozinku.');
-            return;
-        }
-
         try {
            axios.post(
                 LOGIN_URL,
@@ -43,13 +38,13 @@ const Login = () => {
             Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
 setLoggedIn(true);
             }).catch(error=>{
-            setErrorMessage('Pogrešno korisničko ime ili lozinka.');
+            setErrorMessage(error.response.data.message);
                 
             });
 
          
         } catch (error) {
-            setErrorMessage('Pogrešno korisničko ime ili lozinka.');
+            setErrorMessage(error);
         }
     };
 if(loggedIn){
