@@ -9,7 +9,7 @@ import './Login.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [pin, setPin] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const LOGIN_URL= 'https://pos-app-backend-tim56.onrender.com/auth/login';
     const ROLE="user";
@@ -22,7 +22,7 @@ const Login = () => {
                 LOGIN_URL,
                 {
                     username: username,
-                    password: password,
+                    password: pin,
                     role: ROLE
                 },
                 {
@@ -79,9 +79,9 @@ return <Home />;
                     <img src={passIcon} alt="" />
                     <input
                         type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="PIN"
+                        value={pin}
+                        onChange={(e) => setPin(e.target.value)}
                     />
                 </div>
             </div>
