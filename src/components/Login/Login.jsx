@@ -89,7 +89,7 @@ return <Home />;
             </div>
 
             <div className="submit-container">
-                <div className="submit" onClick={handleLogin}>Login</div>
+                <div className="submit" onClick={handleLogin}>Log in</div>
             </div>
         </div>
     );
