@@ -28,10 +28,10 @@ describe('Login Component', () => {
     
     render(<Login />);
     
-    fireEvent.change(screen.getByPlaceholderText('Email'), {
+    fireEvent.change(screen.getByPlaceholderText('Username'), {
       target: { value: 'test' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
+    fireEvent.change(screen.getByPlaceholderText('Pin'), {
       target: { value: 'test' },
     });
     const logins = screen.getAllByText('Login');
@@ -52,8 +52,8 @@ describe('Login Component', () => {
       
       
     });
-    expect(screen.queryByText('Molimo unesite email i lozinku.')).not.toBeInTheDocument();
-      expect(screen.queryByText('Pogrešno korisničko ime ili lozinka.')).not.toBeInTheDocument();
+    expect(screen.queryByText('User not found')).not.toBeInTheDocument();
+      expect(screen.queryByText('Invalid password')).not.toBeInTheDocument();
       expect(screen.queryByText('Login')).not.toBeInTheDocument();
   });
 
@@ -62,10 +62,10 @@ describe('Login Component', () => {
     
     render(<Login />);
     
-    fireEvent.change(screen.getByPlaceholderText('Email'), {
+    fireEvent.change(screen.getByPlaceholderText('Username'), {
       target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
+    fireEvent.change(screen.getByPlaceholderText('Pin'), {
       target: { value: 'password' },
     });
     let logins = screen.getAllByText('Login');
@@ -82,8 +82,8 @@ describe('Login Component', () => {
         },
         { headers: { 'Content-Type': 'application/json' } }
       );
-      expect(screen.queryByText('Molimo unesite email i lozinku.')).not.toBeInTheDocument();
-      expect(screen.getByText('Pogrešno korisničko ime ili lozinka.')).toBeInTheDocument();
+      expect(screen.queryByText('User not found')).not.toBeInTheDocument();
+      expect(screen.getByText('Invalid password')).toBeInTheDocument();
       const logins = screen.getAllByText('Login');
       expect(logins[1]).toBeInTheDocument();
     });
@@ -93,8 +93,8 @@ describe('Login Component', () => {
     render(<Login />);
     let logins = screen.getAllByText('Login');
     fireEvent.click(logins[1]);
-    expect(screen.getByText('Molimo unesite email i lozinku.')).toBeInTheDocument();
-    expect(screen.queryByText('Pogrešno korisničko ime ili lozinka.')).not.toBeInTheDocument();
+    expect(screen.getByText('User not found')).toBeInTheDocument();
+    expect(screen.queryByText('Invalid password')).not.toBeInTheDocument();
     expect(screen.getAllByText('Login')[1]).toBeInTheDocument();
   });
 
