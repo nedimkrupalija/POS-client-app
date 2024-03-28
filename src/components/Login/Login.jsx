@@ -35,8 +35,10 @@ const Login = () => {
                 endOfToday.setHours(23, 59, 59, 999); 
                 const expiresIn = Math.ceil((endOfToday.getTime() - Date.now()) / 1000); 
                    const token = response.data.token;
+
             Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
 setLoggedIn(true);
+
             }).catch(error=>{
             setErrorMessage(error.response.data.message);
                 
