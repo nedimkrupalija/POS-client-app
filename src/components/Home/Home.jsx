@@ -13,16 +13,9 @@ const Home = () => {
     if (!loggedIn) {
         return <Login />;
     }
-    const handleClientApp = () => {
-        Cookies.remove('jwt');
-        window.location.href = "https://pos-manager-app-tim56.vercel.app";
-    }
 
     return (
         <div className="button-container">
-            <button onClick={handleClientApp}>
-                Manager app
-            </button>
             <button onClick={handleLogout}>Log out</button>
         </div>
     );

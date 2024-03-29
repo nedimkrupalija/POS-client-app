@@ -52,6 +52,12 @@ setLoggedIn(true);
 if(loggedIn){
 return <Home />;
 }
+
+const handleManagerApp = () => {
+    Cookies.remove('jwt');
+    window.location.href = "https://pos-staff-app-tim56.vercel.app/";
+}
+
     return (
         <div className="container">
             <div className="header">
@@ -91,6 +97,11 @@ return <Home />;
             <div className="submit-container">
                 <div className="submit" onClick={handleLogin}>Log in</div>
             </div>
+
+            <div className='admin'> 
+            <span onClick={handleManagerApp}>Log in as admin </span> 
+            </div>
+            
         </div>
     );
 };
