@@ -1,0 +1,32 @@
+
+.tables-to-assign {
+    margin-left: 3%;
+}
+
+.table {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin: 5%;
+    margin-right: 10%;
+}
+
+.table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border-bottom: 1px solid #ccc;
+    padding: 4px 8px;
+    text-align: center;
+}
+
+.buttons {
+    margin: 10px;
+    color: #000000;
+    background: #c7cfd3;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+}
