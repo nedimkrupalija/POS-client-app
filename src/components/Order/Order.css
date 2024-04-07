@@ -4,20 +4,32 @@
     margin-left: 3%;
 }
 
-.table {
+.table1,
+.table2,
+.table3,
+.table4 {
     margin-top: 20px;
     margin-bottom: 20px;
     margin: 5%;
     margin-right: 10%;
 }
 
-.table table {
+.table1 table,
+.table2 table,
+.table3 table,
+.table4 table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table th,
-.table td {
+.table1 th,
+.table1 td,
+.table2 th,
+.table2 td,
+.table3 th,
+.table3 td,
+.table4 th,
+.table4 td {
     border-bottom: 1px solid #ccc;
     padding: 4px 8px;
     text-align: center;
@@ -35,7 +47,8 @@
 .edit_icon,
 .delete_icon,
 .more_icon,
-.plus_icon {
+.plus_icon,
+.minus_icon {
     width: 20px;
     height: 20px;
     margin: 0 10px 0 10px;
