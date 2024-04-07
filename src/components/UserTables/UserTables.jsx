@@ -34,6 +34,36 @@ const UserTables = () => {
             </table>
         </div>
         </div>
+
+        <div className='tables-to-unassign'>
+        <h2 className='tables-title'>ASSIGNED TABLES</h2>
+        <div className='table'>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>User ID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Tajra</td>
+                        <td>27</td>
+                        <td><button className='buttons'>UNASSIGN</button></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Amina</td>
+                        <td>25</td>
+                        <td><button className='buttons'>UNASSIGN</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
         </>
     );
 };
