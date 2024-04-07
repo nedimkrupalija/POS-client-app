@@ -1,5 +1,6 @@
 
-.list-orders {
+.list-orders,
+.create-order {
     margin-left: 3%;
 }
 
@@ -33,9 +34,21 @@
 
 .edit_icon,
 .delete_icon,
-.more_icon {
+.more_icon,
+.plus_icon {
     width: 20px;
     height: 20px;
     margin: 0 10px 0 10px;
     cursor: pointer;
+}
+
+
+.buttons1 {
+    margin-left: 5%;
+    margin-top: 2%;
+    color: #fff;
+    background: #72b5dc;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
 }
