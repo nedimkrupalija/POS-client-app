@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import './Order.css';
+import delete_icon from '../../assets/delete.png';
+import edit_icon from '../../assets/edit.png';
+import more_icon from '../../assets/more.png';
 
 const Order = () => {
     
@@ -30,7 +33,11 @@ const Order = () => {
                         <td>2</td>
                         <td>3</td>
                         <td>15</td>
-                        <td>nesto</td>
+                        <td>
+                            <img src={edit_icon} alt="Edit" className='edit_icon' />
+                            <img src={delete_icon} alt="Delete" className='delete_icon' />
+                            <img src={more_icon} alt="More" className='more_icon' />
+                        </td>
                     </tr>
                     <tr>
                         <td>2</td>
@@ -38,7 +45,11 @@ const Order = () => {
                         <td>2</td>
                         <td>2.5</td>
                         <td>7</td>
-                        <td>nesto</td>
+                        <td>
+                            <img src={edit_icon} alt="Edit" className='edit_icon' />
+                            <img src={delete_icon} alt="Delete" className='delete_icon' />
+                            <img src={more_icon} alt="More" className='more_icon' />
+                        </td>
                     </tr>
                 </tbody>
             </table>

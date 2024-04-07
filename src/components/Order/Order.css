@@ -1,0 +1,41 @@
+
+.list-orders {
+    margin-left: 3%;
+}
+
+.table {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin: 5%;
+    margin-right: 10%;
+}
+
+.table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border-bottom: 1px solid #ccc;
+    padding: 4px 8px;
+    text-align: center;
+}
+
+.buttons {
+    margin: 10px;
+    color: #000000;
+    background: #c7cfd3;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.edit_icon,
+.delete_icon,
+.more_icon {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px 0 10px;
+    cursor: pointer;
+}
