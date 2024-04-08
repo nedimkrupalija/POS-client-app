@@ -3,7 +3,6 @@ import Home from './components/Home/Home.jsx'
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import UserTables from './components/UserTables/UserTables.jsx';
-import Order from './components/Order/Order.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -18,7 +17,7 @@ function App() {
         {isLoggedIn ? <Home /> : <Login />}     </div>*/
         <Router>
           <Routes>
-          <Route exact path="/" element={<Order />} />
+          <Route exact path="/" element={<UserTables />} />
           </Routes>
         </Router>
   )
