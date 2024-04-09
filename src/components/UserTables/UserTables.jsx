@@ -25,8 +25,9 @@ const UserTables = () => {
             };
             fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
                 .then(response => {
-                    const assigned = response.filter(table => table.UserId === userId);
-                    const others = response.filter(table => table.UserId !== userId);
+                    const assigned = response.filter(table => parseInt(table.UserId) === parseInt(userId));
+                    const others = response.filter(table => parseInt(table.UserId) !== parseInt(userId));
+                    
                     setAssignedTables(assigned);
                     setOtherTables(others);
                 })
@@ -114,17 +115,17 @@ const UserTables = () => {
                                 <tr key={table.id}>
                                     <td>{table.id}</td>
                                     <td>{table.name}</td>
-                                    <td>{table.UserId ? table.UserId : 'NOT ASSIGNED'}</td>
+                                    <td>{table.UserId ? table.UserId : <div className='not-assigned-info'><strong>NOT ASSIGNED</strong></div>}</td>
                                     <td>
                                         {
-                                            table.UserId === localStorage.getItem('userId') ?
+                                            table.UserId ?
+                                                <div className='assigned-info'><strong>ASSIGNED</strong></div> :
                                                 <input
                                                     type="checkbox"
                                                     className='tables-check-box'
                                                     checked={selectedTables.includes(table.id)}
                                                     onChange={() => handleCheckboxChange(table.id)}
-                                                /> :
-                                                'ASSIGNED'
+                                                />
                                         }
                                     </td>
                                 </tr>

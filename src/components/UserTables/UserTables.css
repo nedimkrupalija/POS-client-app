@@ -88,5 +88,10 @@ body {
     content: normal;
     border: 1px solid #555555; /* Boja kada je checkbox selektovan */
 }
-
+.assigned-info {
+    color: red;
+}
+.not-assigned-info {
+    color: rgb(123, 190, 22);
+}
 

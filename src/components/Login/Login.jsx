@@ -42,6 +42,7 @@ const Login = () => {
                 });
             }
         }).then(data => {
+            console.log("Data ", data)
             if (data.location && data.location.id) {
                 localStorage.setItem('locationId', data.location.id);
             }
