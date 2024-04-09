@@ -4,12 +4,15 @@ import Cookies from 'js-cookie';
 import delete_icon from '../../assets/delete.png';
 import edit_icon from '../../assets/edit.png';
 import items_icon from '../../assets/items.png';
+import close_modal_icon from '../../assets/close-modal.png'
 import more_icon from '../../assets/more.png';
 import plus_icon from '../../assets/plus.png';
 import minus_icon from '../../assets/minus.png';
 
 const Order = () => {
     const [orders, setOrders] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
     const token = () => {
         return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJ1c2VybmFtZSI6ImFtaW5hIiwiaWF0IjoxNzEyNjgxNDAwLCJleHAiOjE3MTI2OTk5OTl9.ufRaYvDY5QdJgJ2VjuyqPwcH02dVD8TXD87shv5ID5Q'//Cookies.get("jwt");
@@ -28,6 +31,7 @@ const Order = () => {
             };
             fetchData('GET', `http://localhost:3000/purchase-order`, null, headers)
                 .then(response => {
+                    console.log("Res ", response)
                     setOrders(response)
                 })
                 .catch(error => {
@@ -64,6 +68,11 @@ const Order = () => {
         }
     };
 
+    const openModal = (order) => {
+        setSelectedOrder(order);
+        setModalVisible(true);
+    }
+
     return (
         <>
             <div className='list-orders'>
@@ -94,7 +103,7 @@ const Order = () => {
                                     <td>{order.grandTotal}</td>
                                     <td>{order.tableId || 'Not assigned'}</td>
                                     <td>
-                                        <img src={items_icon} alt="Items" className='items_icon' />
+                                        <img src={items_icon} alt="Items" className='items_icon' onClick={() => openModal(order)} />
                                     </td>
                                     <td>
                                         <img src={edit_icon} alt="Edit" className='edit_icon' />
@@ -105,140 +114,45 @@ const Order = () => {
                         </tbody>
                     </table>
                 </div>
-                {/*        <div className='table2'>
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price (Excluding VAT) ($)</th>
-                            <th>Price (Including VAT) ($)</th>
-                            <th>Measurement</th>
-                            <th>BAR-code</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Voda Voda</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>30</td>
-                            <td>05224678</td>
-                            <td>
-                                <img src={edit_icon} alt="Edit" className='edit_icon' />
-                                <img src={delete_icon} alt="Delete" className='delete_icon' />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Coca Cola</td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>50</td>
-                            <td>123456789</td>
-                            <td>
-                                <img src={edit_icon} alt="Edit" className='edit_icon' />
-                                <img src={delete_icon} alt="Delete" className='delete_icon' />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                {modalVisible && selectedOrder && (
+                    <div className="modal-purchase-order">
+                        <div className="modal-content-purchase-order">
+                            <img src={close_modal_icon} onClick={() => setModalVisible(false)} alt="Close" className="close-modal-icon" />
+                            <h2>ITEMS FOR ORDER #{selectedOrder.id}</h2>
+                            <div className='table2'>
+                                <table border="1">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>BAR-code</th>
+                                            <th>Measurement</th>
+                                            <th>Purchase price</th>
+                                            <th>Selling price</th>
+                                            <th>VAT Id</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {selectedOrder.items.map(item => (
+                                            <tr key={item.id}>
+                                                <td>{item.id}</td>
+                                                <td>{item.name}</td>
+                                                <td>{item.barCode}</td>
+                                                <td>{item.measurmentUnit}</td>
+                                                <td>{item.purchasePrice}</td>
+                                                <td>{item.sellingPrice}</td>
+                                                <td>{item.VAT.id}</td>
+                                                <td>{item.quantity}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
-        </div>
-
-
-        <div className='create-order'>
-            <button className='buttons1'>CHOOSE ITEM</button>
-            <div className='table3'>
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price (Excluding VAT) ($)</th>
-                            <th>Price (Including VAT) ($)</th>
-                            <th>Measurement</th>
-                            <th>BAR-code</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Voda Voda</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>30</td>
-                            <td>05224678</td>
-                            <td>
-                                <img src={plus_icon} alt="Plus" className='plus_icon' />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Coca Cola</td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>50</td>
-                            <td>123456789</td>
-                            <td>
-                                <img src={plus_icon} alt="Plus" className='plus_icon' />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div className='table4'>
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Price (Excluding VAT) ($)</th>
-                            <th>Price (Including VAT) ($)</th>
-                            <th>Measurement</th>
-                            <th>BAR-code</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Voda Voda</td>
-                            <td>0.5</td>
-                            <td>1</td>
-                            <td>30</td>
-                            <td>05224678</td>
-                            <td>
-                                <img src={plus_icon} alt="Plus" className='plus_icon' />
-                                1
-                                <img src={minus_icon} alt="Minus" className='minus_icon' />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Coca Cola</td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>50</td>
-                            <td>123456789</td>
-                            <td>
-                                <img src={plus_icon} alt="Plus" className='plus_icon' />
-                                1
-                                <img src={minus_icon} alt="Minus" className='minus_icon' />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <button className='buttons1'>CREATE</button>
-    */}
-            </div>
-
         </>
     );
 };
