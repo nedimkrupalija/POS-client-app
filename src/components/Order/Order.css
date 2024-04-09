@@ -48,7 +48,8 @@
 .delete_icon,
 .more_icon,
 .plus_icon,
-.minus_icon {
+.minus_icon,
+.items_icon {
     width: 20px;
     height: 20px;
     margin: 0 10px 0 10px;
@@ -64,4 +65,7 @@
     border-radius: 50px;
     font-size: 15px;
     font-weight: 700;
+}
+body {
+    color: #000000;
 }
