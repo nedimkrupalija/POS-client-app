@@ -14,6 +14,7 @@ const Order = () => {
     const [orders, setOrders] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [modalChooseItemsVisible, setModalChooseItemsVisible] = useState(false);
 
     const token = () => {
         return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJ1c2VybmFtZSI6ImFtaW5hIiwiaWF0IjoxNzEyNzA4MDc1LCJleHAiOjE3MTI3ODYzOTl9.kuTsaq5N4FNLoe0U-OECma-u3_JrVA3EeEsRiAbgd04'//Cookies.get("jwt");
@@ -49,7 +50,7 @@ const Order = () => {
             console.error('Error checking location storage:', error);
         }
     };
-    
+
     const fetchOrders = async () => {
         const locationId = localStorage.getItem('locationId');
         const userId = localStorage.getItem('userId');
@@ -184,58 +185,62 @@ const Order = () => {
                 </div>)}
             {!tableVisible && (
                 <div className='create-order'>
-                    <button className='buttons1'>CHOOSE ITEM</button>
-                    <div className='table3'>
-                        <table border="1">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Price (Excluding VAT) ($)</th>
-                                    <th>Price (Including VAT) ($)</th>
-                                    <th>Measurement</th>
-                                    <th>BAR-code</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Voda Voda</td>
-                                    <td>0.5</td>
-                                    <td>1</td>
-                                    <td>30</td>
-                                    <th>05224678</th>
-                                    <td>
-                                        <img src={plus_icon} alt="Plus" className='plus_icon' />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Coca Cola</td>
-                                    <td>1</td>
-                                    <td>2</td>
-                                    <td>50</td>
-                                    <td>123456789</td>
-                                    <td>
-                                        <img src={plus_icon} alt="Plus" className='plus_icon' />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
+                    <h3 className='order-items-title'>ITEMS FROM YOUR ORDER</h3>
+                    <button className='buttons1 create-order-button'>CREATE ORDER</button>
+                    <button className='buttons1' onClick={() => setModalChooseItemsVisible(true)}>CHOOSE ITEMS</button>
+                    {modalChooseItemsVisible && (
+                        <div className="modal-choose-items">
+                            <div className="modal-content-choose-items">
+                                <img src={close_modal_icon} onClick={() => setModalChooseItemsVisible(false)} alt="Close" className="close-modal-icon" />
+                                <h2>ITEMS</h2>
+                                <div className='table3'>
+                                    <table border="1">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>BAR-code</th>
+                                                <th>Measurement</th>
+                                                <th>Purchase price</th>
+                                                <th>Selling price</th>
+                                                <th>VAT Id</th>
+                                                <th>Quantity</th>
+                                                <th>Add to order</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Voda Voda</td>
+                                                <td>0.5</td>
+                                                <td>1</td>
+                                                <td>30</td>
+                                                <td>05224678</td>
+                                                <td>05224678</td>
+                                                <td className='editable-cell-purchase-orders'>
+                                                    <input className="editable-input-purchase-orders" type="number" placeholder='Quantity' defaultValue={1}></input>
+                                                </td>
+                                                <td>
+                                                    <img src={plus_icon} alt="Plus" className='plus_icon' />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>)}
                     <div className='table4'>
                         <table border="1">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
-                                    <th>Price (Excluding VAT) ($)</th>
-                                    <th>Price (Including VAT) ($)</th>
-                                    <th>Measurement</th>
                                     <th>BAR-code</th>
-                                    <th>Actions</th>
+                                    <th>Measurement</th>
+                                    <th>Purchase price</th>
+                                    <th>Selling price</th>
+                                    <th>VAT Id</th>
+                                    <th>Quantity</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -245,31 +250,15 @@ const Order = () => {
                                     <td>0.5</td>
                                     <td>1</td>
                                     <td>30</td>
-                                    <th>05224678</th>
-                                    <td>
-                                        <img src={plus_icon} alt="Plus" className='plus_icon' />
-                                        1
-                                        <img src={minus_icon} alt="Minus" className='minus_icon' />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Coca Cola</td>
-                                    <td>1</td>
-                                    <td>2</td>
-                                    <td>50</td>
-                                    <td>123456789</td>
-                                    <td>
-                                        <img src={plus_icon} alt="Plus" className='plus_icon' />
-                                        1
-                                        <img src={minus_icon} alt="Minus" className='minus_icon' />
+                                    <td>05224678</td>
+                                    <td>05224678</td>
+                                    <td className='editable-cell-purchase-orders'>
+                                        <input className="editable-input-purchase-orders" type="number" placeholder='Quantity' defaultValue={1}></input>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-
-                    <button className='buttons1'>CREATE</button>
                 </div>
             )}
 
