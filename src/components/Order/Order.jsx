@@ -13,6 +13,7 @@ const Order = () => {
     const [tableVisible, settableVisible] = useState(true);
     const [orders, setOrders] = useState([]);
     const [items, setItems] = useState([]);
+    const [itemsFromOrder, setItemsFromOrder] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [modalChooseItemsVisible, setModalChooseItemsVisible] = useState(false);
@@ -126,6 +127,26 @@ const Order = () => {
         }
     };
 
+    const handleAddToOrder = (item, quantity) => {
+        const parsedQuantity = parseFloat(quantity);
+
+        const existingItemIndex = itemsFromOrder.findIndex(orderItem => orderItem.id === item.id);
+        if (existingItemIndex !== -1) {
+            const updatedItems = [...itemsFromOrder];
+            const existingQuantity = parseFloat(updatedItems[existingItemIndex].quantity);
+            updatedItems[existingItemIndex].quantity = existingQuantity + parsedQuantity;
+            setItemsFromOrder(updatedItems);
+        } else {
+            const newItem = { ...item, quantity: parsedQuantity };
+            setItemsFromOrder([...itemsFromOrder, newItem]);
+        }
+    };
+
+    const handleRemoveFromOrder = (index) => {
+        const updatedItems = [...itemsFromOrder];
+        updatedItems.splice(index, 1);
+        setItemsFromOrder(updatedItems);
+    };
 
     return (
         <>
@@ -244,10 +265,10 @@ const Order = () => {
                                                     <td>{item.sellingPrice}</td>
                                                     <td>{item.VAT ? item.VAT.id : item.VATId}</td>
                                                     <td className='editable-cell-purchase-orders'>
-                                                        <input className="editable-input-purchase-orders" type="number" placeholder='Quantity' defaultValue={1}></input>
+                                                        <input id={`quantity_${item.id}`} className="editable-input-purchase-orders" type="number" placeholder='Quantity' defaultValue={1}></input>
                                                     </td>
                                                     <td>
-                                                        <img src={plus_icon} alt="Plus" className='plus_icon' />
+                                                        <img src={plus_icon} alt="Plus" className='plus_icon' onClick={() => handleAddToOrder(item, parseInt(document.getElementById(`quantity_${item.id}`).value))} />
                                                     </td>
                                                 </tr>
                                             ))}
@@ -270,21 +291,36 @@ const Order = () => {
                                     <th>Selling price</th>
                                     <th>VAT Id</th>
                                     <th>Quantity</th>
+                                    <th>Remove</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Voda Voda</td>
-                                    <td>0.5</td>
-                                    <td>1</td>
-                                    <td>30</td>
-                                    <td>05224678</td>
-                                    <td>05224678</td>
-                                    <td className='editable-cell-purchase-orders'>
-                                        <input className="editable-input-purchase-orders" type="number" placeholder='Quantity' defaultValue={1}></input>
-                                    </td>
-                                </tr>
+                                {itemsFromOrder.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.id}</td>
+                                        <td>{item.name}</td>
+                                        <td>{item.barCode}</td>
+                                        <td>{item.measurmentUnit}</td>
+                                        <td>{item.purchasePrice}</td>
+                                        <td>{item.sellingPrice}</td>
+                                        <td>{item.VAT ? item.VAT.id : item.VATId}</td>
+                                        <td className='editable-cell-purchase-orders'>
+                                            <input
+                                                type="number"
+                                                value={item.quantity}
+                                                className="editable-input-purchase-orders"
+                                                onChange={(e) => {
+                                                    const newItems = [...itemsFromOrder];
+                                                    newItems[index].quantity = e.target.value;
+                                                    setItemsFromOrder(newItems);
+                                                }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <img src={minus_icon} alt="Minus" className='minus_icon' onClick={() => handleRemoveFromOrder(index)} />
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
