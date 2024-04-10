@@ -12,12 +12,13 @@ import minus_icon from '../../assets/minus.png';
 const Order = () => {
     const [tableVisible, settableVisible] = useState(true);
     const [orders, setOrders] = useState([]);
+    const [items, setItems] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [modalChooseItemsVisible, setModalChooseItemsVisible] = useState(false);
 
     const token = () => {
-        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJ1c2VybmFtZSI6ImFtaW5hIiwiaWF0IjoxNzEyNzA4MDc1LCJleHAiOjE3MTI3ODYzOTl9.kuTsaq5N4FNLoe0U-OECma-u3_JrVA3EeEsRiAbgd04'//Cookies.get("jwt");
+        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJ1c2VybmFtZSI6ImFtaW5hIiwiaWF0IjoxNzEyNzg2NTI3LCJleHAiOjE3MTI4NzI3OTl9.1iZx7E6mZ9igxpax1aF9JEbEtxADMabreU7cp4c_SbM'//Cookies.get("jwt");
     }
 
     useEffect(() => {
@@ -35,7 +36,6 @@ const Order = () => {
                     Authorization: token()
                 };
                 const storages = await fetchData('GET', `http://localhost:3000/storage`, null, headers);
-
                 const matchingStorage = storages.find(storage => storage.LocationId === parseInt(locationId));
                 if (matchingStorage) {
                     sessionStorage.setItem('hasStorage', 'true');
@@ -60,7 +60,6 @@ const Order = () => {
             };
             fetchData('GET', `http://localhost:3000/purchase-order`, null, headers)
                 .then(response => {
-                    console.log("Res ", response)
                     setOrders(response)
                 })
                 .catch(error => {
@@ -101,6 +100,32 @@ const Order = () => {
         setSelectedOrder(order);
         setModalVisible(true);
     }
+    const handleChooseItems = async () => {
+        try {
+            const hasStorage = sessionStorage.getItem('hasStorage');
+            if (hasStorage === 'true') {
+                const storageId = sessionStorage.getItem('storageId');
+                const headers = {
+                    Authorization: token()
+                };
+                const url = `http://localhost:3000/storage/${storageId}/items`;
+                const response = await fetchData('GET', url, null, headers);
+                setItems(response)
+            } else {
+                const locationId = localStorage.getItem('locationId');
+                const headers = {
+                    Authorization: token()
+                };
+                const url = `http://localhost:3000/item`;
+                const response = await fetchData('GET', url, null, headers);
+                const filteredResponse = response.filter(item => item.Location.id === parseInt(locationId));
+                setItems(filteredResponse)
+            }
+        } catch (error) {
+            console.error('Error choosing items:', error);
+        }
+    };
+
 
     return (
         <>
@@ -187,7 +212,7 @@ const Order = () => {
                 <div className='create-order'>
                     <h3 className='order-items-title'>ITEMS FROM YOUR ORDER</h3>
                     <button className='buttons1 create-order-button'>CREATE ORDER</button>
-                    <button className='buttons1' onClick={() => setModalChooseItemsVisible(true)}>CHOOSE ITEMS</button>
+                    <button className='buttons1' onClick={() => { setModalChooseItemsVisible(true); handleChooseItems() }}>CHOOSE ITEMS</button>
                     {modalChooseItemsVisible && (
                         <div className="modal-choose-items">
                             <div className="modal-content-choose-items">
@@ -209,26 +234,30 @@ const Order = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Voda Voda</td>
-                                                <td>0.5</td>
-                                                <td>1</td>
-                                                <td>30</td>
-                                                <td>05224678</td>
-                                                <td>05224678</td>
-                                                <td className='editable-cell-purchase-orders'>
-                                                    <input className="editable-input-purchase-orders" type="number" placeholder='Quantity' defaultValue={1}></input>
-                                                </td>
-                                                <td>
-                                                    <img src={plus_icon} alt="Plus" className='plus_icon' />
-                                                </td>
-                                            </tr>
+                                            {items.map(item => (
+                                                <tr key={item.id}>
+                                                    <td>{item.id}</td>
+                                                    <td>{item.name}</td>
+                                                    <td>{item.barCode}</td>
+                                                    <td>{item.measurmentUnit}</td>
+                                                    <td>{item.purchasePrice}</td>
+                                                    <td>{item.sellingPrice}</td>
+                                                    <td>{item.VAT ? item.VAT.id : item.VATId}</td>
+                                                    <td className='editable-cell-purchase-orders'>
+                                                        <input className="editable-input-purchase-orders" type="number" placeholder='Quantity' defaultValue={1}></input>
+                                                    </td>
+                                                    <td>
+                                                        <img src={plus_icon} alt="Plus" className='plus_icon' />
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                        </div>)}
+                        </div>
+                    )}
+
                     <div className='table4'>
                         <table border="1">
                             <thead>
@@ -261,7 +290,6 @@ const Order = () => {
                     </div>
                 </div>
             )}
-
         </>
     );
 };
