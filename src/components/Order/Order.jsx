@@ -8,15 +8,19 @@ import close_modal_icon from '../../assets/close-modal.png'
 import more_icon from '../../assets/more.png';
 import plus_icon from '../../assets/plus.png';
 import minus_icon from '../../assets/minus.png';
+import choose_icon from '../../assets/choose.png';
 
 const Order = () => {
     const [tableVisible, settableVisible] = useState(true);
     const [orders, setOrders] = useState([]);
     const [items, setItems] = useState([]);
+    const [tables, setTables] = useState([]);
     const [itemsFromOrder, setItemsFromOrder] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [modalChooseItemsVisible, setModalChooseItemsVisible] = useState(false);
+    const [modalTableVisible, setModalTableVisible] = useState(false);
+    const [tableId, setTableId] = useState('');
 
     const token = () => {
         return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJ1c2VybmFtZSI6ImFtaW5hIiwiaWF0IjoxNzEyNzg2NTI3LCJleHAiOjE3MTI4NzI3OTl9.1iZx7E6mZ9igxpax1aF9JEbEtxADMabreU7cp4c_SbM'//Cookies.get("jwt");
@@ -148,6 +152,23 @@ const Order = () => {
         setItemsFromOrder(updatedItems);
     };
 
+    const fetchTables = async () => {
+        const locationId = localStorage.getItem('locationId');
+        if (locationId) {
+            const headers = {
+                Authorization: token()
+            };
+            fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
+                .then(response => {
+                    console.log("Res ", response)
+                    setTables(response)
+                })
+                .catch(error => {
+                    console.error('Error fetching tables:', error);
+                });
+        }
+    }
+
     return (
         <>
             <h2 className='tables-title'>{tableVisible ? "ORDERS" : "CREATE NEW ORDER"}</h2>
@@ -233,7 +254,10 @@ const Order = () => {
                 <div className='create-order'>
                     <h3 className='order-items-title'>ITEMS FROM YOUR ORDER</h3>
                     <button className='buttons1 create-order-button'>CREATE ORDER</button>
-                    <button className='buttons1' onClick={() => { setModalChooseItemsVisible(true); handleChooseItems() }}>CHOOSE ITEMS</button>
+                    <button className='buttons1' onClick={() => { setModalChooseItemsVisible(true); handleChooseItems() }}>CHOOSE ITEMS</button><br />
+                    <input type="text" readOnly id="findTable" className="table-id-input" placeholder="Table ID" value={tableId} onChange={(e) => setTableId(e.target.value)} />
+                    <button className='select-table-button buttons1' onClick={() => { setModalTableVisible(true); fetchTables() }}>Find Table</button>
+                    <button className='select-table-button buttons1' onClick={() => { setTableId('') }}>Remove Table</button>
                     {modalChooseItemsVisible && (
                         <div className="modal-choose-items">
                             <div className="modal-content-choose-items">
@@ -323,6 +347,36 @@ const Order = () => {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            )}
+            {modalTableVisible && (
+                <div className="modal-table">
+                    <div className="modal-table-content">
+                        <img src={close_modal_icon} onClick={() => setModalTableVisible(false)} alt="Close" className="close-modal-icon" />
+                        <h2 className='select-table-title'>SELECT TABLE</h2>
+                        <div className='table5'>
+                            <table border="1">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>User ID</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {tables.map(table => (
+                                        <tr key={table.id}>
+                                            <td>{table.id}</td>
+                                            <td>{table.name}</td>
+                                            <td>{table.UserId ? table.UserId : <div className='not-assigned-info'><strong>NOT ASSIGNED</strong></div>}</td>
+                                            <td><img onClick={() => { setTableId(table.id); setModalTableVisible(false);}} src={choose_icon} alt="Choose" className='choose-icon' /></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             )}
