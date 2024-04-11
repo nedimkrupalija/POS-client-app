@@ -1,0 +1,251 @@
+.list-orders,
+.create-order {
+    margin-left: 3%;
+}
+.table5,
+.table1,
+.table2,
+.table3 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin: 5%;
+    margin-right: 10%;
+}
+
+.table4 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    margin-left: 5%;
+    margin-right: 10%;
+}
+.table5 table,
+.table1 table,
+.table2 table,
+.table3 table,
+.table4 table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table5 th,
+.table5 td,
+.table1 th,
+.table1 td,
+.table2 th,
+.table2 td,
+.table3 th,
+.table3 td,
+.table4 th,
+.table4 td {
+    border-bottom: 1px solid #ccc;
+    padding: 4px 8px;
+    text-align: center;
+}
+
+.buttons1 {
+    margin: 10px;
+    color: #fff;
+    background: #72b5dc;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+}
+
+.buttons {
+    margin: 10px;
+    color: #000000;
+    background: #c7cfd3;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+}
+
+.buttons:disabled {
+    cursor: default;
+}
+
+.buttons:hover,
+.buttons:focus,
+.buttons:active,
+.buttons1:hover,
+.buttons1:focus,
+.buttons1:active {
+    outline: none;
+}
+
+.buttons1:hover {
+    background: #72b5dcd3;
+}
+
+.edit_icon,
+.delete_icon,
+.more_icon,
+.plus_icon,
+.minus_icon,
+.items_icon,
+.choose-icon {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px 0 10px;
+    cursor: pointer;
+}
+
+body {
+    color: #000000;
+}
+
+.modal-purchase-order {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.modal-content-purchase-order {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-height: 600px;
+    overflow-y: auto;
+    width: 80%;
+    max-width: 800px;
+}
+
+.close-modal-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.buttons-container {
+    margin-left: 60px;
+}
+
+.purchase-orders-check-box {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.purchase-orders-check-box::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: whitesmoke;
+    border: 1px solid #ccc;
+}
+
+.purchase-orders-check-box:checked::after {
+    content: normal;
+    border: 1px solid #ccc;
+}
+
+.editable-cell-purchase-orders {
+    position: relative;
+}
+
+.editable-input-purchase-orders {
+    width: 40%;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    background-color: transparent;
+    color: #000000;
+    font-family: inherit;
+    font-size: inherit;
+    text-align: center;
+}
+
+.editable-input-purchase-orders:focus {
+    outline: none;
+    border: 1px solid #ccc;
+}
+
+.modal-choose-items {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.modal-content-choose-items {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-height: 600px;
+    overflow-y: auto;
+    width: 80%;
+    max-width: 1100px;
+}
+
+.order-items-title {
+    margin-left: 70px;
+}
+.create-order-button {
+    margin-left: 70px;
+}
+.table-id-input {
+    width: 5%;
+    height: 20px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-left: 70px;
+    color: black;
+}
+
+.select-table-button {
+    margin-left: 10px; 
+    margin-top: 30px;
+}
+.modal-table {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.modal-table-content{
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-height: 600px;
+    overflow-y: auto;
+    width: 80%;
+    max-width: 800px;
+}

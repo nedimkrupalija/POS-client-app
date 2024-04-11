@@ -13,6 +13,7 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const LOGIN_URL = 'http://localhost:3000/auth/login';
     const ROLE = "user";
+
     const [loggedIn, setLoggedIn] = useState(false);
 
     const handleLogin = async (event) => {
@@ -27,43 +28,40 @@ const Login = () => {
                 username: username,
                 password: pin,
                 role: ROLE
-            }
-            )
-        }
 
+           }
+           )}
+               
+                
+            ).then(response=>{
+                if(response.ok){
+                    return response.json();
+                }
+                else{
+                    return response.json().then(data=>{
+                        throw new Error(data.message);
+                    });
+                }
+            }).then(data => {
+                if (data.location && data.location.id) {
+                    localStorage.setItem('locationId', data.location.id);
+                }
+                if (data.userId) {
+                    localStorage.setItem('userId', data.userId);
+                }
+                const endOfToday = new Date();
+                endOfToday.setHours(23, 59, 59, 999); 
+                const expiresIn = Math.ceil((endOfToday.getTime() - Date.now()) / 1000); 
+                   const token = data.token;
 
-        ).then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            else {
-                return response.json().then(data => {
-                    throw new Error(data.message);
-                });
-            }
-        }).then(data => {
-            console.log("Data ", data)
-            if (data.location && data.location.id) {
-                localStorage.setItem('locationId', data.location.id);
-            }
-            if (data.userId) {
-                localStorage.setItem('userId', data.userId);
-            }
-            const endOfToday = new Date();
-            endOfToday.setHours(23, 59, 59, 999);
-            const expiresIn = Math.ceil((endOfToday.getTime() - Date.now()) / 1000);
-            const token = data.token;
-
-            Cookies.set('jwt', token, { expires: expiresIn, path: '/' });
-            setLoggedIn(true);
-        }).catch(error => {
-            console.log(error);
-            setErrorMessage(error.message);
-        });
-
-
-
-    };
+                    Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
+                setLoggedIn(true);
+            }).catch(error => {
+                console.log(error);
+                setErrorMessage(error.message);
+            });
+        
+             };
     if (loggedIn) {
         return <Home />;
     }
