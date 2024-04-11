@@ -90,11 +90,7 @@ const Order = () => {
             if (!response.ok) {
                 throw new Error(data.message || 'Error fetching data');
             }
-            const extendedToken = response.headers.get('Authorization');
-            console.log(extendedToken);
-            if (extendedToken) {
-                Cookies.set('jwt', extendedToken, { expires: 1 / 48 });
-            }
+           
             return data;
         } catch (error) {
             throw new Error(error.message || 'Error fetching data');
