@@ -27,7 +27,7 @@ const UserTables = () => {
                 .then(response => {
                     const assigned = response.filter(table => parseInt(table.UserId) === parseInt(userId));
                     const others = response.filter(table => parseInt(table.UserId) !== parseInt(userId));
-                    
+
                     setAssignedTables(assigned);
                     setOtherTables(others);
                 })
@@ -95,6 +95,25 @@ const UserTables = () => {
             });
     }
 
+    const handleUnassignTable = (tableId) => {
+        setIsLoading(true);
+        const headers = {
+            Authorization: token()
+        };
+        const requestBody = {
+            tables: [tableId]
+        };
+        fetchData('DELETE', 'http://localhost:3000/user/tables', requestBody, headers)
+            .then(() => {
+                setIsLoading(false);
+                fetchTables();
+            })
+            .catch(error => {
+                console.error('Error unassigning table:', error);
+                setIsLoading(false);
+            });
+    }
+
     return (
         <>
             <div className='tables-to-assign'>
@@ -143,6 +162,7 @@ const UserTables = () => {
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
+                                <th>Unassign</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,6 +170,7 @@ const UserTables = () => {
                                 <tr key={table.id}>
                                     <td>{table.id}</td>
                                     <td>{table.name}</td>
+                                    <td><button className='active-buttons' onClick={() => handleUnassignTable(table.id)}>UNASSIGN</button></td>
                                 </tr>
                             ))}
                         </tbody>
