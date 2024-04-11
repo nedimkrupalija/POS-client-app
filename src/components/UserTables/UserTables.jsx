@@ -27,7 +27,9 @@ const UserTables = () => {
                 .then(response => {
                     const assigned = response.filter(table => parseInt(table.UserId) === parseInt(userId));
                     const others = response.filter(table => parseInt(table.UserId) !== parseInt(userId));
-
+                    const assignedTableIds = assigned.map(table => table.id);
+                    localStorage.setItem('assignedTableIds', JSON.stringify(assignedTableIds));
+                    console.log("Assigned ", localStorage.getItem('assignedTableIds'))
                     setAssignedTables(assigned);
                     setOtherTables(others);
                 })
