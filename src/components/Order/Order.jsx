@@ -64,8 +64,17 @@ const Order = () => {
                 Authorization: token()
             };
             fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order`, null, headers)
-                .then(response => {
-                    setOrders(response)
+                .then(response1 => {
+                    fetchData('GET','https://pos-app-backend-tim56.onrender.com/location/'+Cookies.get('location')+'/tables',null,headers).then(response=>{
+                        console.log(response);
+                        console.log(response1);
+                        const orders=response1.filter(order=>response.some(table => table.id === order.tableId));
+                        console.log(orders);
+                        setOrders(orders)
+                    }).catch(error=>{
+                        console.error('Error fetching purcshase orders:', error);
+
+                    });
                 })
                 .catch(error => {
                     console.error('Error fetching purcshase orders:', error);
