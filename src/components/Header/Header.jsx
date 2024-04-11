@@ -19,7 +19,7 @@ const Header = () => {
                 const requestBody = {
                     tables: assignedTableIdsArray
                 };
-                fetch('http://localhost:3000/user/tables', {
+                fetch('https://pos-app-backend-tim56.onrender.com/user/tables', {
                     method: 'DELETE',
                     headers: headers,
                     body: JSON.stringify(requestBody)

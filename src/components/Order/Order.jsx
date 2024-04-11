@@ -40,7 +40,7 @@ const Order = () => {
                 const headers = {
                     Authorization: token()
                 };
-                const storages = await fetchData('GET', `http://localhost:3000/storage`, null, headers);
+                const storages = await fetchData('GET', `https://pos-app-backend-tim56.onrender.com/storage`, null, headers);
                 const matchingStorage = storages.find(storage => storage.LocationId === parseInt(locationId));
                 if (matchingStorage) {
                     sessionStorage.setItem('hasStorage', 'true');
@@ -63,7 +63,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `http://localhost:3000/purchase-order`, null, headers)
+            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order`, null, headers)
                 .then(response => {
                     setOrders(response)
                 })
@@ -114,7 +114,7 @@ const Order = () => {
                 const headers = {
                     Authorization: token()
                 };
-                const url = `http://localhost:3000/storage/${storageId}/items`;
+                const url = `https://pos-app-backend-tim56.onrender.com/storage/${storageId}/items`;
                 const response = await fetchData('GET', url, null, headers);
                 console.log("Res ", response)
                 setItems(response)
@@ -123,7 +123,7 @@ const Order = () => {
                 const headers = {
                     Authorization: token()
                 };
-                const url = `http://localhost:3000/item`;
+                const url = `https://pos-app-backend-tim56.onrender.com/item`;
                 const response = await fetchData('GET', url, null, headers);
                 const filteredResponse = response.filter(item => {
                     return item.Location && item.Location.id === parseInt(locationId);
@@ -163,7 +163,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
+            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/location/${locationId}/tables`, null, headers)
                 .then(response => {
                     const assignedToLoggedUser = response.filter(table => parseInt(table.UserId) === parseInt(userId));
                     setTables(assignedToLoggedUser)
@@ -192,7 +192,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            const url = `http://localhost:3000/purchase-order/`;
+            const url = `https://pos-app-backend-tim56.onrender.com/purchase-order/`;
             const response = await fetchData('POST', url, requestData, headers);
             setItemsFromOrder([]);
             setTableId('');
@@ -206,7 +206,7 @@ const Order = () => {
                         }
                     }))
                 };
-                const checkoutResponse = await fetchData('POST', 'http://localhost:3000/pos/checkout', checkoutRequestData, headers);
+                const checkoutResponse = await fetchData('POST', 'https://pos-app-backend-tim56.onrender.com/pos/checkout', checkoutRequestData, headers);
                 console.log('Checkout response:', checkoutResponse);
             }
 
