@@ -9,7 +9,7 @@ import more_icon from '../../assets/more.png';
 import plus_icon from '../../assets/plus.png';
 import minus_icon from '../../assets/minus.png';
 import choose_icon from '../../assets/choose.png';
-
+import Home from '../Home/Home';
 const Order = () => {
     const [tableVisible, settableVisible] = useState(true);
     const [orders, setOrders] = useState([]);
@@ -215,6 +215,7 @@ const Order = () => {
 
 
     return (
+        <Home>
         <>
             <h2 className='tables-title'>{tableVisible ? "ORDERS" : "CREATE NEW ORDER"}</h2>
             <div className="buttons-container">
@@ -444,7 +445,7 @@ const Order = () => {
                     </div>
                 </div>
             )}
-        </>
+        </></Home>
     );
 };
 

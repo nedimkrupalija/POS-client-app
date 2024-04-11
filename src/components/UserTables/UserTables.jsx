@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import './UserTables.css';
-
+import Home from '../Home/Home.jsx'
 const UserTables = () => {
     const [assignedTables, setAssignedTables] = useState([]);
     const [otherTables, setOtherTables] = useState([]);
@@ -117,6 +117,7 @@ const UserTables = () => {
     }
 
     return (
+        <Home>
         <>
             <div className='tables-to-assign'>
                 <h2 className='tables-title'>TABLES TO ASSIGN</h2>
@@ -179,7 +180,7 @@ const UserTables = () => {
                     </table>
                 </div>
             </div>
-        </>
+        </></Home>
     );
 };
 
