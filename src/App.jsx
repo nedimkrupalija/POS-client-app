@@ -16,8 +16,8 @@ function App() {
   return (
       /*<div>
         {isLoggedIn ? <Home /> : <Login />}     </div>*/
-        <Router>
-          <Routes>
+        <Router basename='/'>
+        <Routes>
           <Route exact path="/" element={isLoggedIn ? <Home /> : <Login />} />
           <Route exact path="/tables" element={isLoggedIn ? <UserTables /> : <Login />} />
          <Route exact path="/purchase-orders" element={isLoggedIn ? <Order /> : <Login />} />
