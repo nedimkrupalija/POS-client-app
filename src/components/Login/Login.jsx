@@ -63,7 +63,7 @@ const Login = () => {
         
              };
     if (loggedIn) {
-        return <Home />;
+window.location.reload();
     }
 
     const handleManagerApp = () => {

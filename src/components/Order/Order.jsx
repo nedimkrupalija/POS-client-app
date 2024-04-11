@@ -125,7 +125,9 @@ const Order = () => {
                 };
                 const url = `http://localhost:3000/item`;
                 const response = await fetchData('GET', url, null, headers);
-                const filteredResponse = response.filter(item => item.Location.id === parseInt(locationId));
+                const filteredResponse = response.filter(item => {
+                    return item.Location && item.Location.id === parseInt(locationId);
+                });
                 setItems(filteredResponse)
             }
         } catch (error) {

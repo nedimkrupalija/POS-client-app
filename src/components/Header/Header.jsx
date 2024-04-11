@@ -39,6 +39,7 @@ const Header = () => {
 
         Cookies.remove('jwt');
         setLoggedIn(false);
+        window.location.reload();
     };
     if (!loggedIn) {
         return <Login />;
