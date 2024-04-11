@@ -116,6 +116,7 @@ const Order = () => {
                 };
                 const url = `http://localhost:3000/storage/${storageId}/items`;
                 const response = await fetchData('GET', url, null, headers);
+                console.log("Res ", response)
                 setItems(response)
             } else {
                 const locationId = localStorage.getItem('locationId');
@@ -155,21 +156,33 @@ const Order = () => {
 
     const fetchTables = async () => {
         const locationId = localStorage.getItem('locationId');
+        const userId = localStorage.getItem('userId');
         if (locationId) {
             const headers = {
                 Authorization: token()
             };
             fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
                 .then(response => {
-                    setTables(response)
+                    const assignedToLoggedUser = response.filter(table => parseInt(table.UserId) === parseInt(userId));
+                    setTables(assignedToLoggedUser)
                 })
                 .catch(error => {
                     console.error('Error fetching tables:', error);
                 });
         }
     }
+
     const createOrder = async () => {
         try {
+            const itemsWithExceededQuantity = itemsFromOrder.filter(item => {
+                const availableQuantity = sessionStorage.getItem('hasStorage') === 'true' ? item.StorageItem.quantity : Infinity;
+                return parseFloat(item.quantity) > availableQuantity;
+            });
+
+            if (itemsWithExceededQuantity.length > 0) {
+                alert('Some items have a quantity greater than available quantity. Please adjust the quantities.');
+                return;
+            }
             const requestData = {
                 items: itemsFromOrder.map(item => ({ id: item.id, quantity: item.quantity })),
                 ...(tableId && { tableId: parseInt(tableId) })
@@ -180,7 +193,21 @@ const Order = () => {
             const url = `http://localhost:3000/purchase-order/`;
             const response = await fetchData('POST', url, requestData, headers);
             setItemsFromOrder([]);
-            setTableId('')
+            setTableId('');
+
+            if (sessionStorage.getItem('hasStorage') === 'true') {
+                const checkoutRequestData = {
+                    Items: response.items.map(item => ({
+                        id: item.id,
+                        OrderItems: {
+                            quantity: item.quantity
+                        }
+                    }))
+                };
+                const checkoutResponse = await fetchData('POST', 'http://localhost:3000/pos/checkout', checkoutRequestData, headers);
+                console.log('Checkout response:', checkoutResponse);
+            }
+
         } catch (error) {
             console.error('Error creating order:', error);
         }
@@ -281,7 +308,11 @@ const Order = () => {
                         <div className="modal-choose-items">
                             <div className="modal-content-choose-items">
                                 <img src={close_modal_icon} onClick={() => setModalChooseItemsVisible(false)} alt="Close" className="close-modal-icon" />
-                                <h2>ITEMS</h2>
+                                {
+                                    sessionStorage.getItem('hasStorage') === 'true'
+                                        ? <h2>STORAGE ITEMS</h2>
+                                        : <h2>ITEMS</h2>
+                                }
                                 <div className='table3'>
                                     <table border="1">
                                         <thead>
@@ -293,6 +324,10 @@ const Order = () => {
                                                 <th>Purchase price</th>
                                                 <th>Selling price</th>
                                                 <th>VAT Id</th>
+                                                {
+                                                    sessionStorage.getItem('hasStorage') === 'true' &&
+                                                    <th>Available quantity</th>
+                                                }
                                                 <th>Quantity</th>
                                                 <th>Add to order</th>
                                             </tr>
@@ -307,6 +342,10 @@ const Order = () => {
                                                     <td>{item.purchasePrice}</td>
                                                     <td>{item.sellingPrice}</td>
                                                     <td>{item.VAT ? item.VAT.id : item.VATId}</td>
+                                                    {
+                                                        sessionStorage.getItem('hasStorage') === 'true' &&
+                                                        <td>{item.StorageItem.quantity}</td>
+                                                    }
                                                     <td className='editable-cell-purchase-orders'>
                                                         <input id={`quantity_${item.id}`} className="editable-input-purchase-orders" type="number" placeholder='Quantity' defaultValue={1}></input>
                                                     </td>
@@ -333,6 +372,10 @@ const Order = () => {
                                     <th>Purchase price</th>
                                     <th>Selling price</th>
                                     <th>VAT Id</th>
+                                    {
+                                        sessionStorage.getItem('hasStorage') === 'true' &&
+                                        <th>Available quantity</th>
+                                    }
                                     <th>Quantity</th>
                                     <th>Remove</th>
                                 </tr>
@@ -347,6 +390,10 @@ const Order = () => {
                                         <td>{item.purchasePrice}</td>
                                         <td>{item.sellingPrice}</td>
                                         <td>{item.VAT ? item.VAT.id : item.VATId}</td>
+                                        {
+                                            sessionStorage.getItem('hasStorage') === 'true' &&
+                                            <td>{item.StorageItem.quantity}</td>
+                                        }
                                         <td className='editable-cell-purchase-orders'>
                                             <input
                                                 type="number"
@@ -373,14 +420,13 @@ const Order = () => {
                 <div className="modal-table">
                     <div className="modal-table-content">
                         <img src={close_modal_icon} onClick={() => setModalTableVisible(false)} alt="Close" className="close-modal-icon" />
-                        <h2 className='select-table-title'>SELECT TABLE</h2>
+                        <h2 className='select-table-title'>TABLES ASSIGNED TO YOU</h2>
                         <div className='table5'>
                             <table border="1">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>User ID</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -389,7 +435,6 @@ const Order = () => {
                                         <tr key={table.id}>
                                             <td>{table.id}</td>
                                             <td>{table.name}</td>
-                                            <td>{table.UserId ? table.UserId : <div className='not-assigned-info'><strong>NOT ASSIGNED</strong></div>}</td>
                                             <td><img onClick={() => { setTableId(table.id); setModalTableVisible(false); }} src={choose_icon} alt="Choose" className='choose-icon' /></td>
                                         </tr>
                                     ))}

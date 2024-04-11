@@ -44,6 +44,9 @@ const Login = () => {
                 if (data.location && data.location.id) {
                     localStorage.setItem('locationId', data.location.id);
                 }
+                if (data.userId) {
+                    localStorage.setItem('userId', data.userId);
+                }
                 const endOfToday = new Date();
                 endOfToday.setHours(23, 59, 59, 999); 
                 const expiresIn = Math.ceil((endOfToday.getTime() - Date.now()) / 1000); 
