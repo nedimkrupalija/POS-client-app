@@ -168,7 +168,22 @@ const Order = () => {
                 });
         }
     }
-
+    const createOrder = async () => {
+        try {
+            const requestData = {
+                items: itemsFromOrder.map(item => ({ id: item.id, quantity: item.quantity })),
+                ...(tableId && { tableId: parseInt(tableId) }) 
+            };
+            const headers = {
+                Authorization: token()
+            };
+            const url = `http://localhost:3000/purchase-order/`;
+            const response = await fetchData('POST', url, requestData, headers);
+            setItemsFromOrder([]);
+        } catch (error) {
+            console.error('Error creating order:', error);
+        }
+    };
     return (
         <>
             <h2 className='tables-title'>{tableVisible ? "ORDERS" : "CREATE NEW ORDER"}</h2>
@@ -253,7 +268,13 @@ const Order = () => {
             {!tableVisible && (
                 <div className='create-order'>
                     <h3 className='order-items-title'>ITEMS FROM YOUR ORDER</h3>
-                    <button className='buttons1 create-order-button'>CREATE ORDER</button>
+                    <button
+                        className='buttons1 create-order-button'
+                        onClick={createOrder}
+                        disabled={itemsFromOrder.length === 0}
+                    >
+                        CREATE ORDER
+                    </button>
                     <button className='buttons1' onClick={() => { setModalChooseItemsVisible(true); handleChooseItems() }}>CHOOSE ITEMS</button><br />
                     <input type="text" readOnly id="findTable" className="table-id-input" placeholder="Table ID" value={tableId} onChange={(e) => setTableId(e.target.value)} />
                     <button className='select-table-button buttons1' onClick={() => { setModalTableVisible(true); fetchTables() }}>Find Table</button>
@@ -371,7 +392,7 @@ const Order = () => {
                                             <td>{table.id}</td>
                                             <td>{table.name}</td>
                                             <td>{table.UserId ? table.UserId : <div className='not-assigned-info'><strong>NOT ASSIGNED</strong></div>}</td>
-                                            <td><img onClick={() => { setTableId(table.id); setModalTableVisible(false);}} src={choose_icon} alt="Choose" className='choose-icon' /></td>
+                                            <td><img onClick={() => { setTableId(table.id); setModalTableVisible(false); }} src={choose_icon} alt="Choose" className='choose-icon' /></td>
                                         </tr>
                                     ))}
                                 </tbody>
