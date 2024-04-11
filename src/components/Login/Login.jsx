@@ -11,22 +11,24 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [pin, setPin] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const LOGIN_URL= 'http://localhost:3000/auth/login';
-    const ROLE="user";
+    const LOGIN_URL = 'http://localhost:3000/auth/login';
+    const ROLE = "user";
+
     const [loggedIn, setLoggedIn] = useState(false);
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        
-           fetch(LOGIN_URL,{
+
+        fetch(LOGIN_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body : JSON.stringify({
+            body: JSON.stringify({
                 username: username,
                 password: pin,
                 role: ROLE
+
            }
            )}
                
@@ -59,17 +61,15 @@ const Login = () => {
                 setErrorMessage(error.message);
             });
         
-         
-        
-    };
-if(loggedIn){
-return <Home />;
-}
+             };
+    if (loggedIn) {
+        return <Home />;
+    }
 
-const handleManagerApp = () => {
-    Cookies.remove('jwt');
-    window.location.href = "https://pos-staff-app-tim56.vercel.app/";
-}
+    const handleManagerApp = () => {
+        Cookies.remove('jwt');
+        window.location.href = "https://pos-staff-app-tim56.vercel.app/";
+    }
 
     return (
         <div className="container">
@@ -111,10 +111,10 @@ const handleManagerApp = () => {
                 <div className="submit" onClick={handleLogin}>Log in</div>
             </div>
 
-            <div className='admin'> 
-            <span onClick={handleManagerApp}>Log in as admin </span> 
+            <div className='admin'>
+                <span onClick={handleManagerApp}>Log in as admin </span>
             </div>
-            
+
         </div>
     );
 };
