@@ -155,13 +155,15 @@ const Order = () => {
 
     const fetchTables = async () => {
         const locationId = localStorage.getItem('locationId');
+        const userId = localStorage.getItem('userId');
         if (locationId) {
             const headers = {
                 Authorization: token()
             };
             fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
                 .then(response => {
-                    setTables(response)
+                    const assignedToLoggedUser = response.filter(table => parseInt(table.UserId) === parseInt(userId));
+                    setTables(assignedToLoggedUser)
                 })
                 .catch(error => {
                     console.error('Error fetching tables:', error);
@@ -373,14 +375,13 @@ const Order = () => {
                 <div className="modal-table">
                     <div className="modal-table-content">
                         <img src={close_modal_icon} onClick={() => setModalTableVisible(false)} alt="Close" className="close-modal-icon" />
-                        <h2 className='select-table-title'>SELECT TABLE</h2>
+                        <h2 className='select-table-title'>TABLES ASSIGNED TO YOU</h2>
                         <div className='table5'>
                             <table border="1">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>User ID</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -389,7 +390,6 @@ const Order = () => {
                                         <tr key={table.id}>
                                             <td>{table.id}</td>
                                             <td>{table.name}</td>
-                                            <td>{table.UserId ? table.UserId : <div className='not-assigned-info'><strong>NOT ASSIGNED</strong></div>}</td>
                                             <td><img onClick={() => { setTableId(table.id); setModalTableVisible(false); }} src={choose_icon} alt="Choose" className='choose-icon' /></td>
                                         </tr>
                                     ))}
