@@ -27,15 +27,16 @@ const Order = () => {
     }
 
     useEffect(() => {
+        console.log("uslo");
         fetchOrders();
         checkLocationStorage();
     }, []);
 
     const checkLocationStorage = async () => {
         try {
-            const locationId = localStorage.getItem('locationId');
-            const savedLocationId = sessionStorage.getItem('locationId');
-            const hasStorage = sessionStorage.getItem('hasStorage');
+            const locationId = Cookies.get('location');
+            const savedLocationId = Cookies.get('locationId');
+            const hasStorage = Cookies.get('hasStorage');
             if (locationId && (hasStorage === null || locationId !== savedLocationId)) {
                 const headers = {
                     Authorization: token()
@@ -43,12 +44,12 @@ const Order = () => {
                 const storages = await fetchData('GET', `https://pos-app-backend-tim56.onrender.com/storage`, null, headers);
                 const matchingStorage = storages.find(storage => storage.LocationId === parseInt(locationId));
                 if (matchingStorage) {
-                    sessionStorage.setItem('hasStorage', 'true');
-                    sessionStorage.setItem('storageId', matchingStorage.id);
-                    sessionStorage.setItem('locationId', locationId);
+                    Cookies.set('hasStorage', 'true');
+                   Cookies.set('storageId', matchingStorage.id);
+                    Cookies.set('locationId', locationId);
                 } else {
-                    sessionStorage.setItem('hasStorage', 'false');
-                    sessionStorage.setItem('locationId', locationId);
+                    Cookies.set('hasStorage', 'false');
+                    Cookies.set('locationId', locationId);
                 }
             }
         } catch (error) {
@@ -57,8 +58,10 @@ const Order = () => {
     };
 
     const fetchOrders = async () => {
-        const locationId = localStorage.getItem('locationId');
-        const userId = localStorage.getItem('userId');
+        console.log("Uslo");
+        const locationId = Cookies.get('location');
+        const userId = Cookies.get('userid');
+        console.log("lokacija",locationId)
         if (locationId && userId) {
             const headers = {
                 Authorization: token()
@@ -66,10 +69,13 @@ const Order = () => {
             fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order`, null, headers)
                 .then(response1 => {
                     fetchData('GET','https://pos-app-backend-tim56.onrender.com/location/'+Cookies.get('location')+'/tables',null,headers).then(response=>{
-                        console.log(response);
-                        console.log(response1);
-                        const orders=response1.filter(order=>response.some(table => table.id === order.tableId));
-                        console.log(orders);
+                       
+                    console.log(Cookies.get('userid'));
+                    console.log("response",response);
+                    const orders = response1.filter(order => {
+                        return response.some(table => table.id === order.tableId) || order.tableId ===null ;
+                    });
+                    
                         setOrders(orders)
                     }).catch(error=>{
                         console.error('Error fetching purcshase orders:', error);
@@ -113,9 +119,9 @@ const Order = () => {
     const handleChooseItems = async () => {
         try {
             checkLocationStorage();
-            const hasStorage = sessionStorage.getItem('hasStorage');
+            const hasStorage = Cookies.get('hasStorage');
             if (hasStorage === 'true') {
-                const storageId = sessionStorage.getItem('storageId');
+                const storageId = Cookies.get('storageId');
                 const headers = {
                     Authorization: token()
                 };
@@ -124,7 +130,7 @@ const Order = () => {
                 console.log("Res ", response)
                 setItems(response)
             } else {
-                const locationId = localStorage.getItem('locationId');
+                const locationId = Cookies.get('location');
                 const headers = {
                     Authorization: token()
                 };
@@ -162,8 +168,8 @@ const Order = () => {
     };
 
     const fetchTables = async () => {
-        const locationId = localStorage.getItem('locationId');
-        const userId = localStorage.getItem('userId');
+        const locationId = Cookies.get('location');
+        const userId = Cookies.get('userid');
         if (locationId) {
             const headers = {
                 Authorization: token()
@@ -182,7 +188,7 @@ const Order = () => {
     const createOrder = async () => {
         try {
             const itemsWithExceededQuantity = itemsFromOrder.filter(item => {
-                const availableQuantity = sessionStorage.getItem('hasStorage') === 'true' ? item.StorageItem.quantity : Infinity;
+                const availableQuantity = Cookies.get('hasStorage') === 'true' ? item.StorageItem.quantity : Infinity;
                 return parseFloat(item.quantity) > availableQuantity;
             });
 
@@ -202,7 +208,7 @@ const Order = () => {
             setItemsFromOrder([]);
             setTableId('');
 
-            if (sessionStorage.getItem('hasStorage') === 'true') {
+            if (Cookies.get('hasStorage') === 'true') {
                 const checkoutRequestData = {
                     Items: response.items.map(item => ({
                         id: item.id,
@@ -317,7 +323,7 @@ const Order = () => {
                             <div className="modal-content-choose-items">
                                 <img src={close_modal_icon} onClick={() => setModalChooseItemsVisible(false)} alt="Close" className="close-modal-icon" />
                                 {
-                                    sessionStorage.getItem('hasStorage') === 'true'
+                                    Cookies.get('hasStorage') === 'true'
                                         ? <h2>STORAGE ITEMS</h2>
                                         : <h2>ITEMS</h2>
                                 }
@@ -333,7 +339,7 @@ const Order = () => {
                                                 <th>Selling price</th>
                                                 <th>VAT Id</th>
                                                 {
-                                                    sessionStorage.getItem('hasStorage') === 'true' &&
+                                                    Cookies.get('hasStorage') === 'true' &&
                                                     <th>Available quantity</th>
                                                 }
                                                 <th>Quantity</th>
@@ -351,7 +357,7 @@ const Order = () => {
                                                     <td>{item.sellingPrice}</td>
                                                     <td>{item.VAT ? item.VAT.id : item.VATId}</td>
                                                     {
-                                                        sessionStorage.getItem('hasStorage') === 'true' &&
+                                                        Cookies.get('hasStorage') === 'true' &&
                                                         <td>{item.StorageItem.quantity}</td>
                                                     }
                                                     <td className='editable-cell-purchase-orders'>
@@ -381,7 +387,7 @@ const Order = () => {
                                     <th>Selling price</th>
                                     <th>VAT Id</th>
                                     {
-                                        sessionStorage.getItem('hasStorage') === 'true' &&
+                                        Cookies.get('hasStorage') === 'true' &&
                                         <th>Available quantity</th>
                                     }
                                     <th>Quantity</th>
@@ -399,7 +405,7 @@ const Order = () => {
                                         <td>{item.sellingPrice}</td>
                                         <td>{item.VAT ? item.VAT.id : item.VATId}</td>
                                         {
-                                            sessionStorage.getItem('hasStorage') === 'true' &&
+                                            Cookies.get('hasStorage') === 'true' &&
                                             <td>{item.StorageItem.quantity}</td>
                                         }
                                         <td className='editable-cell-purchase-orders'>

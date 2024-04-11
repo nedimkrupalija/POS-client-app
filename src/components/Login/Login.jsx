@@ -55,6 +55,8 @@ const Login = () => {
                    const token = data.token;
                     Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
                     Cookies.set('location',data.location.id);
+                    Cookies.set('userid',data.userId);
+
                 setLoggedIn(true);
             }).catch(error => {
                 console.log(error);
