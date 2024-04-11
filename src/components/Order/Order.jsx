@@ -172,7 +172,7 @@ const Order = () => {
         try {
             const requestData = {
                 items: itemsFromOrder.map(item => ({ id: item.id, quantity: item.quantity })),
-                ...(tableId && { tableId: parseInt(tableId) }) 
+                ...(tableId && { tableId: parseInt(tableId) })
             };
             const headers = {
                 Authorization: token()
@@ -184,6 +184,34 @@ const Order = () => {
             console.error('Error creating order:', error);
         }
     };
+
+    const confirmDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete this purchase order?")) {
+            await deletePurchaseOrder(id);
+        }
+    };
+
+
+    const deletePurchaseOrder = async (id) => {
+    try {
+        const headers = {
+            'Authorization': token(),
+            'Content-Type': 'application/json'
+        };
+        const response = await fetch(`http://localhost:3000/purchase-order/${id}`, {
+            method: 'DELETE',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            throw new Error('Error deleting order:', response.statusText);
+        }
+        fetchOrders(); 
+    } catch (error) {
+        console.error('Error deleting order:', error);
+    }
+};
+
     return (
         <>
             <h2 className='tables-title'>{tableVisible ? "ORDERS" : "CREATE NEW ORDER"}</h2>
@@ -219,7 +247,7 @@ const Order = () => {
                                         </td>
                                         <td>
                                             <img src={edit_icon} alt="Edit" className='edit_icon' />
-                                            <img src={delete_icon} alt="Delete" className='delete_icon' />
+                                            <img onClick={() => confirmDelete(order.id)} src={delete_icon} alt="Delete" className='delete_icon' />
                                         </td>
                                     </tr>
                                 ))}
