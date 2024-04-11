@@ -23,7 +23,7 @@ const Order = () => {
     const [tableId, setTableId] = useState('');
 
     const token = () => {
-        return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJ1c2VybmFtZSI6ImFtaW5hIiwiaWF0IjoxNzEyNzg2NTI3LCJleHAiOjE3MTI4NzI3OTl9.1iZx7E6mZ9igxpax1aF9JEbEtxADMabreU7cp4c_SbM'//Cookies.get("jwt");
+        return Cookies.get("jwt");
     }
 
     useEffect(() => {
@@ -107,6 +107,7 @@ const Order = () => {
     }
     const handleChooseItems = async () => {
         try {
+            checkLocationStorage();
             const hasStorage = sessionStorage.getItem('hasStorage');
             if (hasStorage === 'true') {
                 const storageId = sessionStorage.getItem('storageId');
@@ -160,7 +161,6 @@ const Order = () => {
             };
             fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
                 .then(response => {
-                    console.log("Res ", response)
                     setTables(response)
                 })
                 .catch(error => {
@@ -180,37 +180,12 @@ const Order = () => {
             const url = `http://localhost:3000/purchase-order/`;
             const response = await fetchData('POST', url, requestData, headers);
             setItemsFromOrder([]);
+            setTableId('')
         } catch (error) {
             console.error('Error creating order:', error);
         }
     };
 
-    const confirmDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this purchase order?")) {
-            await deletePurchaseOrder(id);
-        }
-    };
-
-
-    const deletePurchaseOrder = async (id) => {
-    try {
-        const headers = {
-            'Authorization': token(),
-            'Content-Type': 'application/json'
-        };
-        const response = await fetch(`http://localhost:3000/purchase-order/${id}`, {
-            method: 'DELETE',
-            headers: headers
-        });
-
-        if (!response.ok) {
-            throw new Error('Error deleting order:', response.statusText);
-        }
-        fetchOrders(); 
-    } catch (error) {
-        console.error('Error deleting order:', error);
-    }
-};
 
     return (
         <>
@@ -231,7 +206,6 @@ const Order = () => {
                                     <th>Grand total</th>
                                     <th>Table ID</th>
                                     <th>Items</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -244,10 +218,6 @@ const Order = () => {
                                         <td>{order.tableId || 'Not assigned'}</td>
                                         <td>
                                             <img src={items_icon} alt="Items" className='items_icon' onClick={() => openModal(order)} />
-                                        </td>
-                                        <td>
-                                            <img src={edit_icon} alt="Edit" className='edit_icon' />
-                                            <img onClick={() => confirmDelete(order.id)} src={delete_icon} alt="Delete" className='delete_icon' />
                                         </td>
                                     </tr>
                                 ))}

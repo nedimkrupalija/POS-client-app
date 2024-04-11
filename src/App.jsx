@@ -6,20 +6,21 @@ import Order from './components/Order/Order.jsx';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
-  /*const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const jwtToken = Cookies.get('jwt'); 
-    setIsLoggedIn(!!jwtToken); 
-  }, []);*/
+    const jwtToken = Cookies.get('jwt');
+    setIsLoggedIn(!!jwtToken);
+  }, []);
   return (
-      /*<div>
-        {isLoggedIn ? <Home /> : <Login />}     </div>*/
-        <Router>
-          <Routes>
-          <Route exact path="/" element={<Order />} />
-          </Routes>
-        </Router>
+    /*<div>
+      {isLoggedIn ? <Home /> : <Login />}     </div>*/
+    <Router>
+      <Routes>
+        <Route exact path="/" element={isLoggedIn ? <Home /> : <Login />} />
+        <Route exact path="/purchase-orders" element={isLoggedIn ? <Order /> : <Login />} />
+      </Routes>
+    </Router>
   )
-  }
+}
 export default App

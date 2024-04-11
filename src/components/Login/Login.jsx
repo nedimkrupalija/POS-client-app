@@ -11,7 +11,7 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [pin, setPin] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const LOGIN_URL= 'https://pos-app-backend-tim56.onrender.com/auth/login';
+    const LOGIN_URL= 'http://localhost:3000/auth/login';
     const ROLE="user";
     const [loggedIn, setLoggedIn] = useState(false);
 
