@@ -23,7 +23,7 @@ const UserTables = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
+            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/location/${locationId}/tables`, null, headers)
                 .then(response => {
                     const assigned = response.filter(table => parseInt(table.UserId) === parseInt(userId));
                     const others = response.filter(table => parseInt(table.UserId) !== parseInt(userId));
@@ -85,7 +85,7 @@ const UserTables = () => {
         const requestBody = {
             tables: selectedTables
         };
-        fetchData('POST', 'http://localhost:3000/user/tables', requestBody, headers)
+        fetchData('POST', 'https://pos-app-backend-tim56.onrender.com/user/tables', requestBody, headers)
             .then(() => {
                 setIsLoading(false);
                 setSelectedTables([]);
@@ -105,7 +105,7 @@ const UserTables = () => {
         const requestBody = {
             tables: [tableId]
         };
-        fetchData('DELETE', 'http://localhost:3000/user/tables', requestBody, headers)
+        fetchData('DELETE', 'https://pos-app-backend-tim56.onrender.com/user/tables', requestBody, headers)
             .then(() => {
                 setIsLoading(false);
                 fetchTables();
