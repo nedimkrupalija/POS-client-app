@@ -51,11 +51,10 @@ const Login = () => {
                 }
                 const endOfToday = new Date();
                 endOfToday.setHours(23, 59, 59, 999); 
-                const expiresIn = Math.ceil((endOfToday.getTime() - Date.now()) / 1000); 
                    const token = data.token;
-                    Cookies.set('jwt', token,{ expires: expiresIn,path: '/' });
-                    Cookies.set('location',data.location.id);
-                    Cookies.set('userid',data.userId);
+                    Cookies.set('jwt', token,{ expires: endOfToday,path: '/' });
+                    Cookies.set('location',data.location.id,{ expires: endOfToday,path: '/' });
+                    Cookies.set('userid',data.userId,{ expires: endOfToday,path: '/' });
 
                 setLoggedIn(true);
             }).catch(error => {
