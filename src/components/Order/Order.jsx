@@ -43,13 +43,16 @@ const Order = () => {
                 };
                 const storages = await fetchData('GET', `https://pos-app-backend-tim56.onrender.com/storage`, null, headers);
                 const matchingStorage = storages.find(storage => storage.LocationId === parseInt(locationId));
+                const endOfToday = new Date();
+                endOfToday.setHours(23, 59, 59, 999); 
                 if (matchingStorage) {
-                    Cookies.set('hasStorage', 'true');
-                   Cookies.set('storageId', matchingStorage.id);
-                    Cookies.set('locationId', locationId);
+                    Cookies.set('hasStorage', 'true',{ expires: endOfToday,path: '/' });
+                   Cookies.set('storageId', matchingStorage.id,{ expires: endOfToday,path: '/' });
+                   
+                    Cookies.set('locationId', locationId,{ expires: endOfToday,path: '/' });
                 } else {
-                    Cookies.set('hasStorage', 'false');
-                    Cookies.set('locationId', locationId);
+                    Cookies.set('hasStorage', 'false',{ expires: endOfToday,path: '/' });
+                    Cookies.set('locationId', locationId,{ expires: endOfToday,path: '/' });
                 }
             }
         } catch (error) {
