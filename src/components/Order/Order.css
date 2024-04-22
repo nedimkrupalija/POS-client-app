@@ -10,6 +10,7 @@
     margin-bottom: 20px;
     margin: 5%;
     margin-right: 10%;
+    padding-bottom: 7%;
 }
 
 .table4 {
@@ -17,6 +18,7 @@
     margin-bottom: 20px;
     margin-left: 5%;
     margin-right: 10%;
+    padding-bottom: 7%;
 }
 .table5 table,
 .table1 table,
@@ -25,7 +27,14 @@
 .table4 table {
     width: 100%;
     border-collapse: collapse;
+    padding-bottom: 10px;
+    margin-bottom: 3%;
 }
+
+.table {
+    margin-bottom: 20px; /* Dodajte željeni razmak s donje strane tabele */
+}
+
 .table5 th,
 .table5 td,
 .table1 th,
@@ -49,6 +58,7 @@
     font-size: 15px;
     font-weight: 700;
     border: none;
+    padding: 12px 24px; /* Povećaj padding za veće dugme */
 }
 
 .buttons {
@@ -59,6 +69,7 @@
     font-size: 15px;
     font-weight: 700;
     border: none;
+    padding: 12px 24px; /* Povećaj padding za veće dugme */
 }
 
 .buttons:disabled {
@@ -81,14 +92,18 @@
 .edit_icon,
 .delete_icon,
 .more_icon,
-.plus_icon,
-.minus_icon,
-.items_icon,
-.choose-icon {
+.minus_icon {
     width: 20px;
     height: 20px;
     margin: 0 10px 0 10px;
     cursor: pointer;
+}
+
+.items_icon,
+.plus_icon,
+.choose-icon {
+    width: 30px; /* Povećaj širinu slike */
+    height: 30px; /* Povećaj visinu slike */
 }
 
 body {
@@ -127,12 +142,14 @@ body {
     background: none;
     border: none;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
 }
 
 .buttons-container {
     margin-left: 60px;
+    padding-top: 3%;
+    padding-bottom: 3%;
 }
 
 .purchase-orders-check-box {
@@ -164,8 +181,8 @@ body {
 }
 
 .editable-input-purchase-orders {
-    width: 40%;
-    padding: 5px;
+    width: 70%; /* Povećaj širinu input polja */
+    padding: 8px; /* Povećaj padding unutar input polja */
     box-sizing: border-box;
     border: 1px solid #ccc;
     background-color: transparent;
@@ -206,9 +223,14 @@ body {
 
 .order-items-title {
     margin-left: 70px;
+    font-size: 23px; /* Povećaj veličinu fonta */
+    margin-bottom: 3%; /* Povećaj razmak ispod naslova */
+    width: 100%; /* Proširi naslov na širinu roditeljskog elementa */
+    padding-bottom: 3%;
 }
 .create-order-button {
     margin-left: 70px;
+    margin-bottom: 3%;
 }
 .table-id-input {
     width: 5%;
@@ -248,4 +270,40 @@ body {
     overflow-y: auto;
     width: 80%;
     max-width: 800px;
+}
+
+.table5,
+.table1,
+.table2,
+.table3,
+.table4 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin: 5%;
+    margin-right: 10%;
+}
+
+.table5 th,
+.table5 td,
+.table1 th,
+.table1 td,
+.table2 th,
+.table2 td,
+.table3 th,
+.table3 td,
+.table4 th,
+.table4 td {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 20px; /* Povećaj padding za 10px */
+    text-align: center;
+}
+
+.tables-title-order {
+    font-size: 27px;
+    margin-bottom: 3%;
+    margin-left: 3%; /* Dodaj istu udaljenost s lijeve strane kao i naslov "TABLES" */
+}
+
+.quantity-controls {
+    font-size: 12px; /* Postavite manju veličinu fonta za ikone */
 }

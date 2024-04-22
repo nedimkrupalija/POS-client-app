@@ -233,7 +233,7 @@ const Order = () => {
     return (
         <Home>
         <>
-            <h2 className='tables-title'>{tableVisible ? "ORDERS" : "CREATE NEW ORDER"}</h2>
+            <h2 className='tables-title-order'>{tableVisible ? "ORDERS" : "CREATE NEW ORDER"}</h2>
             <div className="buttons-container">
                 <button disabled={tableVisible} className={tableVisible ? 'buttons' : 'buttons1'} onClick={() => { settableVisible(true); fetchOrders(); }}>LIST ORDERS</button>
                 <button disabled={!tableVisible} className={tableVisible ? 'buttons1' : 'buttons'} onClick={() => { settableVisible(false); }}>CREATE NEW ORDER</button>
