@@ -4,12 +4,14 @@ body {
 
 .tables-to-assign {
     margin-left: 3%;
+    margin-right: 3%; /* Dodaj malo prostora s desne strane */
 }
 
 .table {
-    margin-bottom: 50px;
-    margin-left: 5%;
-    margin-right: 10%;
+    margin-bottom: 5%;
+    margin-left: 2%; /* Smanji lijevi margin */
+    margin-right: 2%; /* Dodaj desni margin */
+    padding-bottom: 7%;
 }
 
 .table table {
@@ -20,9 +22,12 @@ body {
 .table th,
 .table td {
     border-bottom: 1px solid #ccc;
-    padding: 4px 8px;
+    padding: 10px 20px; /* Povećaj padding za veći razmak */
     text-align: center;
+    font-size: 17px; /* Povećaj veličinu fonta */
+    color: #000000; /* Promijeni boju teksta ako je potrebno */
 }
+
 
 .active-buttons {
     margin: 10px;
@@ -60,14 +65,18 @@ body {
 .active-buttons:hover {
     background: #72b5dcd3;
 }
+
 .assign-yourself-button {
     margin-left: 70px;
     margin-top: 20px;
     margin-bottom: 50px;
+    padding: 12px 24px; /* Povećaj padding za veće dugme */
+    font-size: 18px;
 }
+
 .tables-check-box {
-    width: 20px; /* Povećanje širine checkboxa */
-    height: 20px; /* Povećanje visine checkboxa */
+    width: 29px; /* Povećaj širinu checkboxa */
+    height: 29px; /* Povećaj visinu checkboxa */
     position: relative;
     border: 1px solid #555555;
     cursor: pointer;
@@ -95,3 +104,11 @@ body {
     color: rgb(123, 190, 22);
 }
 
+.tables-title {
+    font-size: 27px;
+    margin-bottom: 3%;
+}
+
+.tables-to-assign .active-buttons {
+    padding: 10px 20px; /* Povećaj padding za dugme "Unassign" */
+}
