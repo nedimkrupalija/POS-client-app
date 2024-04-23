@@ -345,7 +345,7 @@ const Order = () => {
                                                         Cookies.get('hasStorage') === 'true' &&
                                                         <th>Available quantity</th>
                                                     }
-                                                    <th>Quantity</th>
+                                                    <th className='quantity'>Quantity</th>
                                                     <th>Add to order</th>
                                                 </tr>
                                             </thead>
@@ -363,7 +363,7 @@ const Order = () => {
                                                             Cookies.get('hasStorage') === 'true' &&
                                                             <td>{item.StorageItem.quantity}</td>
                                                         }
-                                                        <td>
+                                                        <td className='editable-cell-purchase-orders quantity'>
                                                             <img
                                                                 src={plus_icon}
                                                                 alt="Plus"
@@ -422,7 +422,7 @@ const Order = () => {
                                             Cookies.get('hasStorage') === 'true' &&
                                             <th>Available quantity</th>
                                         }
-                                        <th>Quantity</th>
+                                        <th className='quantity'>Quantity</th>
                                         <th>Remove</th>
                                     </tr>
                                 </thead>
@@ -440,7 +440,7 @@ const Order = () => {
                                                 Cookies.get('hasStorage') === 'true' &&
                                                 <td>{item.StorageItem.quantity}</td>
                                             }
-                                            <td className='editable-cell-purchase-orders'>
+                                            <td className='editable-cell-purchase-orders quantity'>
                                                 <img
                                                     src={plus_icon}
                                                     alt="Plus"

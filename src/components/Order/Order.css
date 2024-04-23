@@ -2,6 +2,7 @@
 .create-order {
     margin-left: 3%;
 }
+
 .table5,
 .table1,
 .table2,
@@ -20,6 +21,7 @@
     margin-right: 10%;
     padding-bottom: 7%;
 }
+
 .table5 table,
 .table1 table,
 .table2 table,
@@ -32,7 +34,8 @@
 }
 
 .table {
-    margin-bottom: 20px; /* Dodajte željeni razmak s donje strane tabele */
+    margin-bottom: 20px;
+    /* Dodajte željeni razmak s donje strane tabele */
 }
 
 .table5 th,
@@ -58,7 +61,8 @@
     font-size: 15px;
     font-weight: 700;
     border: none;
-    padding: 12px 24px; /* Povećaj padding za veće dugme */
+    padding: 12px 24px;
+    /* Povećaj padding za veće dugme */
 }
 
 .buttons {
@@ -69,7 +73,8 @@
     font-size: 15px;
     font-weight: 700;
     border: none;
-    padding: 12px 24px; /* Povećaj padding za veće dugme */
+    padding: 12px 24px;
+    /* Povećaj padding za veće dugme */
 }
 
 .buttons:disabled {
@@ -102,8 +107,9 @@
 .items_icon,
 .plus_icon,
 .choose-icon {
-    width: 30px; /* Povećaj širinu slike */
-    height: 30px; /* Povećaj visinu slike */
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
 }
 
 body {
@@ -131,7 +137,7 @@ body {
     max-height: 600px;
     overflow-y: auto;
     width: 80%;
-    max-width: 800px;
+    max-width: 900px;
 }
 
 .close-modal-icon {
@@ -177,12 +183,17 @@ body {
 }
 
 .editable-cell-purchase-orders {
-    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .editable-input-purchase-orders {
-    width: 70%; /* Povećaj širinu input polja */
-    padding: 8px; /* Povećaj padding unutar input polja */
+    flex: 1;
+    width: 80px;
+    margin-left: 5px;
+    padding: 8px;
     box-sizing: border-box;
     border: 1px solid #ccc;
     background-color: transparent;
@@ -223,15 +234,20 @@ body {
 
 .order-items-title {
     margin-left: 70px;
-    font-size: 23px; /* Povećaj veličinu fonta */
-    margin-bottom: 3%; /* Povećaj razmak ispod naslova */
-    width: 100%; /* Proširi naslov na širinu roditeljskog elementa */
+    font-size: 23px;
+    /* Povećaj veličinu fonta */
+    margin-bottom: 3%;
+    /* Povećaj razmak ispod naslova */
+    width: 100%;
+    /* Proširi naslov na širinu roditeljskog elementa */
     padding-bottom: 3%;
 }
+
 .create-order-button {
     margin-left: 70px;
     margin-bottom: 3%;
 }
+
 .table-id-input {
     width: 5%;
     height: 20px;
@@ -245,9 +261,10 @@ body {
 }
 
 .select-table-button {
-    margin-left: 10px; 
+    margin-left: 10px;
     margin-top: 30px;
 }
+
 .modal-table {
     position: fixed;
     top: 0;
@@ -261,7 +278,7 @@ body {
     z-index: 9999;
 }
 
-.modal-table-content{
+.modal-table-content {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
@@ -294,16 +311,20 @@ body {
 .table4 th,
 .table4 td {
     border-bottom: 1px solid #ccc;
-    padding: 10px 20px; /* Povećaj padding za 10px */
+    padding: 10px 20px;
+    /* Povećaj padding za 10px */
     text-align: center;
 }
 
 .tables-title-order {
     font-size: 27px;
     margin-bottom: 3%;
-    margin-left: 3%; /* Dodaj istu udaljenost s lijeve strane kao i naslov "TABLES" */
+    margin-left: 3%;
+    /* Dodaj istu udaljenost s lijeve strane kao i naslov "TABLES" */
 }
 
 .quantity-controls {
-    font-size: 12px; /* Postavite manju veličinu fonta za ikone */
+    font-size: 12px;
+    /* Postavite manju veličinu fonta za ikone */
 }
+
