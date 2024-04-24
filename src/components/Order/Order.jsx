@@ -21,6 +21,8 @@ const Order = () => {
     const [modalChooseItemsVisible, setModalChooseItemsVisible] = useState(false);
     const [modalTableVisible, setModalTableVisible] = useState(false);
     const [tableId, setTableId] = useState('');
+    const [status, setStatus] = useState('');
+
 
     const token = () => {
         return Cookies.get("jwt");
@@ -66,12 +68,13 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order`, null, headers)
+            fetchData('GET', `http://localhost:3000/purchase-order/location/${locationId}`, null, headers)
                 .then(response1 => {
+                    console.log("ABC")
+                    console.log(response1)
                     fetchData('GET','https://pos-app-backend-tim56.onrender.com/location/'+Cookies.get('location')+'/tables',null,headers).then(response=>{
                        
-                    console.log(Cookies.get('userid'));
-                    console.log("response",response);
+                    
                     const orders = response1.filter(order => {
                         return response.some(table => table.id === order.tableId) || order.tableId ===null ;
                     });
@@ -112,7 +115,37 @@ const Order = () => {
         }
     };
 
+
+    const finishOrder = async (order) =>{
+        try {
+
+            const headers = {
+                Authorization: token()
+            };
+
+           await fetchData('PUT', 'http://localhost:3000/purchase-order/status/'+order.id, {status: "finished"}, headers)
+
+            setStatus("finshed");
+            if (Cookies.get('hasStorage') === 'true') {
+                const checkoutRequest = {
+                    Items: order.items.map(item => ({
+                        id: item.id,
+                        OrderItems: {
+                            quantity: item.quantity
+                        }
+                    }))
+                };
+                const checkoutResponse = await fetchData('POST', 'https://pos-app-backend-tim56.onrender.com/pos/checkout', checkoutRequest, headers);
+                console.log('Checkout response:', checkoutResponse);
+            }
+        } catch (error) {
+            
+        }
+    }
+
     const openModal = (order) => {
+        console.log("FUAH")
+        console.log(order)
         setSelectedOrder(order);
         setModalVisible(true);
     }
@@ -197,29 +230,21 @@ const Order = () => {
                 return;
             }
             const requestData = {
+                
                 items: itemsFromOrder.map(item => ({ id: item.id, quantity: item.quantity })),
-                ...(tableId && { tableId: parseInt(tableId) })
+                ...(tableId && { tableId: parseInt(tableId) }),
+                ...( { status: "pending" }),
+                ...({locationId :  Cookies.get('location')})
             };
             const headers = {
                 Authorization: token()
             };
-            const url = `https://pos-app-backend-tim56.onrender.com/purchase-order/`;
+            const url = `http://localhost:3000/purchase-order/`;
             const response = await fetchData('POST', url, requestData, headers);
             setItemsFromOrder([]);
             setTableId('');
 
-            if (Cookies.get('hasStorage') === 'true') {
-                const checkoutRequestData = {
-                    Items: response.items.map(item => ({
-                        id: item.id,
-                        OrderItems: {
-                            quantity: item.quantity
-                        }
-                    }))
-                };
-                const checkoutResponse = await fetchData('POST', 'https://pos-app-backend-tim56.onrender.com/pos/checkout', checkoutRequestData, headers);
-                console.log('Checkout response:', checkoutResponse);
-            }
+           
 
         } catch (error) {
             console.error('Error creating order:', error);
@@ -246,19 +271,35 @@ const Order = () => {
                                     <th>VAT</th>
                                     <th>Grand total</th>
                                     <th>Table ID</th>
+                                    <th>Status</th>
                                     <th>Items</th>
+                                    
+                                    <th>Finish order</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {orders.map(order => (
+                                    
                                     <tr key={order.id}>
                                         <td>{order.id}</td>
                                         <td>{order.totals}</td>
                                         <td>{order.vat}</td>
                                         <td>{order.grandTotal}</td>
+                                        
                                         <td>{order.tableId || 'Not assigned'}</td>
+                                        <td>{order.status}</td>
                                         <td>
                                             <img src={items_icon} alt="Items" className='items_icon' onClick={() => openModal(order)} />
+                                        </td>
+                                        <td>
+                                            <img src={items_icon} alt="Finish" className='items_icon' onClick={() => {
+                                                if(order.status=='pending'){
+                                                    finishOrder(order)
+                                                }
+                                                else{
+                                                    alert("Order is already finished")
+                                                }
+                                                    }} />    
                                         </td>
                                     </tr>
                                 ))}
