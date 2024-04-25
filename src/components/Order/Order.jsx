@@ -71,7 +71,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `http://localhost:3000/purchase-order/location/${locationId}`, null, headers)
+            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order/location/${locationId}`, null, headers)
                 .then(response1 => {
                     fetchData('GET', 'https://pos-app-backend-tim56.onrender.com/location/' + Cookies.get('location') + '/tables', null, headers).then(response => {
 
@@ -125,7 +125,7 @@ const Order = () => {
                 Authorization: token()
             };
 
-            await fetchData('PUT', 'http://localhost:3000/purchase-order/status/' + order.id, { status: "finished" }, headers)
+            await fetchData('PUT', 'https://pos-app-backend-tim56.onrender.com/purchase-order/status/' + order.id, { status: "finished" }, headers)
             const updatedOrders = orders.map(ord => {
                 if (ord.id === order.id) {
                     return { ...ord, status: "finished" };
@@ -214,7 +214,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
+            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/location/${locationId}/tables`, null, headers)
                 .then(response => {
                     const assignedToLoggedUser = response.filter(table => parseInt(table.UserId) === parseInt(userId));
                     setTables(assignedToLoggedUser)
@@ -248,7 +248,7 @@ const Order = () => {
             };
             console.log("DATA")
             console.log(requestData)
-            const url = `http://localhost:3000/purchase-order/`;
+            const url = `https://pos-app-backend-tim56.onrender.com/purchase-order/`;
             const response = await fetchData('POST', url, requestData, headers);
             setItemsFromOrder([]);
             setTableId('');
