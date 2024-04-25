@@ -11,9 +11,10 @@
     color: #fff;
     background: #72b5dc;
     border-radius: 50px;
-    font-size: 15px;
+    font-size: 18px; /* Veca velicina fonta */
     font-weight: 700;
-  }
+    padding: 12px 24px;
+}
 
   .menu-icon {
     display: none;
