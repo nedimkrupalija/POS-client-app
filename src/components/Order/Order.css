@@ -2,6 +2,7 @@
 .create-order {
     margin-left: 3%;
 }
+
 .table5,
 .table1,
 .table2,
@@ -10,6 +11,7 @@
     margin-bottom: 20px;
     margin: 5%;
     margin-right: 10%;
+    padding-bottom: 7%;
 }
 
 .table4 {
@@ -17,7 +19,9 @@
     margin-bottom: 20px;
     margin-left: 5%;
     margin-right: 10%;
+    padding-bottom: 7%;
 }
+
 .table5 table,
 .table1 table,
 .table2 table,
@@ -25,7 +29,15 @@
 .table4 table {
     width: 100%;
     border-collapse: collapse;
+    padding-bottom: 10px;
+    margin-bottom: 3%;
 }
+
+.table {
+    margin-bottom: 20px;
+    /* Dodajte željeni razmak s donje strane tabele */
+}
+
 .table5 th,
 .table5 td,
 .table1 th,
@@ -49,6 +61,8 @@
     font-size: 15px;
     font-weight: 700;
     border: none;
+    padding: 12px 24px;
+    /* Povećaj padding za veće dugme */
 }
 
 .buttons {
@@ -59,6 +73,8 @@
     font-size: 15px;
     font-weight: 700;
     border: none;
+    padding: 12px 24px;
+    /* Povećaj padding za veće dugme */
 }
 
 .buttons:disabled {
@@ -70,7 +86,10 @@
 .buttons:active,
 .buttons1:hover,
 .buttons1:focus,
-.buttons1:active {
+.buttons1:active,
+.add-to-order-button:hover,
+.add-to-order-button:focus,
+.add-to-order-button:active {
     outline: none;
 }
 
@@ -81,13 +100,18 @@
 .edit_icon,
 .delete_icon,
 .more_icon,
-.plus_icon,
-.minus_icon,
-.items_icon,
-.choose-icon {
+.minus_icon {
     width: 20px;
     height: 20px;
     margin: 0 10px 0 10px;
+    cursor: pointer;
+}
+
+.items_icon,
+.plus_icon,
+.choose-icon {
+    width: 30px;
+    height: 30px;
     cursor: pointer;
 }
 
@@ -116,7 +140,7 @@ body {
     max-height: 600px;
     overflow-y: auto;
     width: 80%;
-    max-width: 800px;
+    max-width: 900px;
 }
 
 .close-modal-icon {
@@ -127,12 +151,14 @@ body {
     background: none;
     border: none;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
 }
 
 .buttons-container {
     margin-left: 60px;
+    padding-top: 3%;
+    padding-bottom: 3%;
 }
 
 .purchase-orders-check-box {
@@ -160,12 +186,17 @@ body {
 }
 
 .editable-cell-purchase-orders {
-    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .editable-input-purchase-orders {
-    width: 40%;
-    padding: 5px;
+    flex: 1;
+    width: 80px;
+    margin-left: 5px;
+    padding: 8px;
     box-sizing: border-box;
     border: 1px solid #ccc;
     background-color: transparent;
@@ -206,10 +237,20 @@ body {
 
 .order-items-title {
     margin-left: 70px;
+    font-size: 23px;
+    /* Povećaj veličinu fonta */
+    margin-bottom: 3%;
+    /* Povećaj razmak ispod naslova */
+    width: 100%;
+    /* Proširi naslov na širinu roditeljskog elementa */
+    padding-bottom: 3%;
 }
+
 .create-order-button {
     margin-left: 70px;
+    margin-bottom: 3%;
 }
+
 .table-id-input {
     width: 5%;
     height: 20px;
@@ -223,9 +264,10 @@ body {
 }
 
 .select-table-button {
-    margin-left: 10px; 
+    margin-left: 10px;
     margin-top: 30px;
 }
+
 .modal-table {
     position: fixed;
     top: 0;
@@ -239,7 +281,7 @@ body {
     z-index: 9999;
 }
 
-.modal-table-content{
+.modal-table-content {
     background-color: white;
     padding: 20px;
     border-radius: 5px;
@@ -249,3 +291,89 @@ body {
     width: 80%;
     max-width: 800px;
 }
+
+.table5,
+.table1,
+.table2,
+.table3,
+.table4 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin: 5%;
+    margin-right: 10%;
+}
+
+.table5 th,
+.table5 td,
+.table1 th,
+.table1 td,
+.table2 th,
+.table2 td,
+.table3 th,
+.table3 td,
+.table4 th,
+.table4 td {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 20px;
+    /* Povećaj padding za 10px */
+    text-align: center;
+}
+
+.tables-title-order {
+    font-size: 27px;
+    margin-bottom: 3%;
+    margin-left: 3%;
+    /* Dodaj istu udaljenost s lijeve strane kao i naslov "TABLES" */
+}
+
+.quantity-controls {
+    font-size: 12px;
+    /* Postavite manju veličinu fonta za ikone */
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+}
+
+.grid-item {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.grid-item h3 {
+    text-align: center; 
+}
+
+.grid-item p {
+    margin: 5px 0; 
+}
+
+.grid-item p strong {
+    font-weight: bold; 
+}
+
+.grid-item .quantity {
+    display: flex; 
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.grid-item .editable-input-purchase-orders {
+    width: 50px; 
+    margin: 0 10px;
+}
+
+.grid-item .add-to-order-button {
+    display: block;
+    margin-top: 10px; 
+    width: 100%; 
+    height: 50px;
+    color: #fff;
+    background: #72b5dc;
+    border-radius: 50px;
+    border: none;
+}
+
