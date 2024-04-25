@@ -86,7 +86,10 @@
 .buttons:active,
 .buttons1:hover,
 .buttons1:focus,
-.buttons1:active {
+.buttons1:active,
+.add-to-order-button:hover,
+.add-to-order-button:focus,
+.add-to-order-button:active {
     outline: none;
 }
 
@@ -326,5 +329,51 @@ body {
 .quantity-controls {
     font-size: 12px;
     /* Postavite manju veličinu fonta za ikone */
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+}
+
+.grid-item {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.grid-item h3 {
+    text-align: center; 
+}
+
+.grid-item p {
+    margin: 5px 0; 
+}
+
+.grid-item p strong {
+    font-weight: bold; 
+}
+
+.grid-item .quantity {
+    display: flex; 
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.grid-item .editable-input-purchase-orders {
+    width: 50px; 
+    margin: 0 10px;
+}
+
+.grid-item .add-to-order-button {
+    display: block;
+    margin-top: 10px; 
+    width: 100%; 
+    height: 50px;
+    color: #fff;
+    background: #72b5dc;
+    border-radius: 50px;
+    border: none;
 }
 

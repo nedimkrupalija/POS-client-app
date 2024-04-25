@@ -330,79 +330,53 @@ const Order = () => {
                                             ? <h2>STORAGE ITEMS</h2>
                                             : <h2>ITEMS</h2>
                                     }
-                                    <div className='table3'>
-                                        <table border="1">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>BAR-code</th>
-                                                    <th>Measurement</th>
-                                                    <th>Purchase price</th>
-                                                    <th>Selling price</th>
-                                                    <th>VAT Id</th>
-                                                    {
-                                                        Cookies.get('hasStorage') === 'true' &&
-                                                        <th>Available quantity</th>
-                                                    }
-                                                    <th className='quantity'>Quantity</th>
-                                                    <th>Add to order</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {items.map(item => (
-                                                    <tr key={item.id}>
-                                                        <td>{item.id}</td>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.barCode}</td>
-                                                        <td>{item.measurmentUnit}</td>
-                                                        <td>{item.purchasePrice}</td>
-                                                        <td>{item.sellingPrice}</td>
-                                                        <td>{item.VAT ? item.VAT.id : item.VATId}</td>
-                                                        {
-                                                            Cookies.get('hasStorage') === 'true' &&
-                                                            <td>{item.StorageItem.quantity}</td>
-                                                        }
-                                                        <td className='editable-cell-purchase-orders quantity'>
-                                                            <img
-                                                                src={plus_icon}
-                                                                alt="Plus"
-                                                                className='plus_icon'
-                                                                onClick={() => {
-                                                                    const quantityInput = document.getElementById(`quantity_${item.id}`);
-                                                                    if (quantityInput) {
-                                                                        quantityInput.value = parseInt(quantityInput.value) + 1;
-                                                                    }
-                                                                }}
-                                                            />
-                                                            <input
-                                                                type="number"
-                                                                id={`quantity_${item.id}`}
-                                                                className="editable-input-purchase-orders"
-                                                                placeholder='Quantity'
-                                                                defaultValue={1}
-                                                            />
-                                                            <img
-                                                                src={minus_icon}
-                                                                alt="Minus"
-                                                                className='minus_icon'
-                                                                onClick={() => {
-                                                                    const quantityInput = document.getElementById(`quantity_${item.id}`);
-                                                                    if (quantityInput) {
-                                                                        quantityInput.value = parseInt(quantityInput.value) - 1 >= 0 ? parseInt(quantityInput.value) - 1 : 0;
-                                                                    }
-                                                                }}
-                                                            />
-                                                        </td>
-
-                                                        <td>
-                                                            <img src={plus_icon} alt="Plus" className='plus_icon' onClick={() => handleAddToOrder(item, parseInt(document.getElementById(`quantity_${item.id}`).value))} />
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                    <div className='grid'>
+                                        {items.map(item => (
+                                            <div key={item.id} className='grid-item'>
+                                                <h3>{item.name}</h3>
+                                                <p><strong>ID:</strong> {item.id}</p>
+                                                <p><strong>BAR-code:</strong> {item.barCode}</p>
+                                                <p><strong>Measurement:</strong> {item.measurmentUnit}</p>
+                                                <p><strong>Purchase price:</strong> {item.purchasePrice}</p>
+                                                <p><strong>Selling price:</strong> {item.sellingPrice}</p>
+                                                <p><strong>VAT Id:</strong> {item.VAT ? item.VAT.id : item.VATId}</p>
+                                                {Cookies.get('hasStorage') === 'true' && <p><strong>Available quantity:</strong> {item.StorageItem.quantity}</p>}
+                                                <div className='quantity'>
+                                                    <img
+                                                        src={plus_icon}
+                                                        alt="Plus"
+                                                        className='plus_icon'
+                                                        onClick={() => {
+                                                            const quantityInput = document.getElementById(`quantity_${item.id}`);
+                                                            if (quantityInput) {
+                                                                quantityInput.value = parseInt(quantityInput.value) + 1;
+                                                            }
+                                                        }}
+                                                    />
+                                                    <input
+                                                        type="number"
+                                                        id={`quantity_${item.id}`}
+                                                        className="editable-input-purchase-orders"
+                                                        placeholder='Quantity'
+                                                        defaultValue={1}
+                                                    />
+                                                    <img
+                                                        src={minus_icon}
+                                                        alt="Minus"
+                                                        className='minus_icon'
+                                                        onClick={() => {
+                                                            const quantityInput = document.getElementById(`quantity_${item.id}`);
+                                                            if (quantityInput) {
+                                                                quantityInput.value = parseInt(quantityInput.value) - 1 >= 0 ? parseInt(quantityInput.value) - 1 : 0;
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                                <button className="add-to-order-button" onClick={() => handleAddToOrder(item, parseInt(document.getElementById(`quantity_${item.id}`).value))}>Add to Order</button>
+                                            </div>
+                                        ))}
                                     </div>
+
                                 </div>
                             </div>
                         )}
