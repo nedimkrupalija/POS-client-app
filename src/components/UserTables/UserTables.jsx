@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import './UserTables.css';
+import Grid from '@mui/material/Grid'; // Grid version 1
 import Home from '../Home/Home.jsx'
+import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
 const UserTables = () => {
     const [assignedTables, setAssignedTables] = useState([]);
     const [otherTables, setOtherTables] = useState([]);
     const [selectedTables, setSelectedTables] = useState([]);
+    const [selectedUnassignTable, setSelectedUnassignTable] = useState(null);
+    const [selectedUnassignTables, setSelectedUnassignTables] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [selectedTable, setSelectedTable] = useState(null);
     const token = () => {
         return Cookies.get("jwt");
+    }
+
+    const selectTable = (table) => {
+        setSelectedTable(selectedTable === table ? null : table);
+    }
+
+    const selectUnassignTable = (table) => {
+        setSelectedUnassignTable(selectedUnassignTable === table ? null : table);
     }
 
     useEffect(() => {
@@ -56,7 +70,7 @@ const UserTables = () => {
             if (!response.ok) {
                 throw new Error(data.message || 'Error fetching data');
             }
-          
+
             return data;
         } catch (error) {
             throw new Error(error.message || 'Error fetching data');
@@ -64,11 +78,27 @@ const UserTables = () => {
     };
 
     const handleCheckboxChange = (tableId) => {
+
         setSelectedTables(prevSelectedTables => {
             if (prevSelectedTables.includes(tableId)) {
+
                 return prevSelectedTables.filter(id => id !== tableId);
             } else {
                 return [...prevSelectedTables, tableId];
+            }
+        });
+    }
+
+    const handleUnassignTableCheck = (tableId) => {
+
+
+
+
+        setSelectedUnassignTables(prevSelectedUnassignTables => {
+            if (prevSelectedUnassignTables.includes(tableId)) {
+                return prevSelectedUnassignTables.filter(id => id !== tableId);
+            } else {
+                return [...prevSelectedUnassignTables, tableId];
             }
         });
     }
@@ -99,7 +129,7 @@ const UserTables = () => {
             Authorization: token()
         };
         const requestBody = {
-            tables: [tableId]
+            tables: selectedUnassignTables
         };
         fetchData('DELETE', 'https://pos-app-backend-tim56.onrender.com/user/tables', requestBody, headers)
             .then(() => {
@@ -114,70 +144,99 @@ const UserTables = () => {
 
     return (
         <Home>
-        <>
-            <div className='tables-to-assign'>
-                <h2 className='tables-title'>TABLES TO ASSIGN</h2>
-                <button className='active-buttons assign-yourself-button' onClick={handleAssignYourself} disabled={selectedTables.length === 0 || isLoading}>Assign Yourself</button>
-                <div className='table'>
-                    <table border="1">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>User ID</th>
-                                <th>Assign</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {otherTables.map(table => (
-                                <tr key={table.id}>
-                                    <td>{table.id}</td>
-                                    <td>{table.name}</td>
-                                    <td>{table.UserId ? table.UserId : <div className='not-assigned-info'><strong>NOT ASSIGNED</strong></div>}</td>
-                                    <td>
-                                        {
-                                            table.UserId ?
-                                                <div className='assigned-info'><strong>ASSIGNED</strong></div> :
-                                                <input
-                                                    type="checkbox"
-                                                    className='tables-check-box'
-                                                    checked={selectedTables.includes(table.id)}
-                                                    onChange={() => handleCheckboxChange(table.id)}
-                                                />
-                                        }
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            <>
+                <div>
+                    <h2 className='tables-title'>TABLES ON LOCATION</h2>
                 </div>
-            </div>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 5, sm: 8, md: 12 }}>
 
-            <div className='tables-to-assign'>
-                <h2 className='tables-title'>TABLES ASSIGNED TO YOU</h2>
-                <div className='table'>
-                    <table border="1">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Unassign</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {assignedTables.map(table => (
-                                <tr key={table.id}>
-                                    <td>{table.id}</td>
-                                    <td>{table.name}</td>
-                                    <td><button className='active-buttons' onClick={() => handleUnassignTable(table.id)}>UNASSIGN</button></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {otherTables.map((table, index) => {
+
+                        let backgroundColor = table.UserId ? 'orangered' : 'springgreen';
+                        if (selectedTables.includes(table.id)) {
+                            backgroundColor = 'skyblue';
+                        }
+                        return (
+                            <Grid item xs={6} sm={6} md={4} key={index}>
+                                <Paper
+                                    style={{
+                                        backgroundColor: backgroundColor,
+                                        padding: 40,
+                                        cursor: 'pointer', 
+                                    }}
+                                    onClick={() => {
+                                        if (table.UserId == null) {
+
+                                            handleCheckboxChange(table.id)
+                                            selectTable(table)
+                                        }
+                                    }
+                                    } 
+                                >
+                                    {table.name}
+                                </Paper>
+                            </Grid>
+                        );
+                    })}
+
+
+
+
+                </Grid>
+
+
+                <div>
+                    <button className='active-buttons' onClick={handleAssignYourself} disabled={selectedTables.length === 0 || isLoading}>Assign Yourself</button>
                 </div>
-            </div>
-        </></Home>
+
+
+                <div>
+                    <h2 className='tables-title'>TABLES ASSIGNED TO YOU</h2>
+
+                </div>
+
+
+
+
+
+
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                    {assignedTables.map((table, index) => {
+
+                        let bgColor = "springgreen"
+
+                        if (selectedUnassignTables.includes(table.id)) {
+                            bgColor = 'skyblue';
+                        }
+                        return (
+                            <Grid item xs={2} sm={4} md={4} key={index}>
+                                <Paper
+                                    style={{
+                                        backgroundColor: bgColor,
+                                        padding: 40,
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={() => {
+
+
+                                        handleUnassignTableCheck(table.id)
+                                        selectUnassignTable(table)
+                                    }
+
+                                    } 
+                                >
+                                    {table.name}
+                                </Paper>
+                            </Grid>
+                        );
+                    })}
+                </Grid>
+                <div>
+                    <button className='active-buttons ' onClick={handleUnassignTable} disabled={selectedUnassignTables.length === 0 || isLoading}>Unassign Yourself</button>
+                </div>
+            </></Home>
     );
 };
+
 
 export default UserTables;
