@@ -73,12 +73,10 @@ const Order = () => {
             };
             fetchData('GET', `http://localhost:3000/purchase-order/location/${locationId}`, null, headers)
                 .then(response1 => {
-
                     fetchData('GET', 'https://pos-app-backend-tim56.onrender.com/location/' + Cookies.get('location') + '/tables', null, headers).then(response => {
 
                         console.log(Cookies.get('userid'));
                         console.log("response", response);
-
                         const orders = response1.filter(order => {
                             return response.some(table => table.id === order.tableId) || order.tableId === null;
                         });
@@ -155,8 +153,6 @@ const Order = () => {
     }
 
     const openModal = (order) => {
-        console.log("FUAH")
-        console.log(order)
         setSelectedOrder(order);
         setModalVisible(true);
     }
@@ -218,7 +214,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/location/${locationId}/tables`, null, headers)
+            fetchData('GET', `http://localhost:3000/location/${locationId}/tables`, null, headers)
                 .then(response => {
                     const assignedToLoggedUser = response.filter(table => parseInt(table.UserId) === parseInt(userId));
                     setTables(assignedToLoggedUser)
@@ -250,6 +246,8 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
+            console.log("DATA")
+            console.log(requestData)
             const url = `http://localhost:3000/purchase-order/`;
             const response = await fetchData('POST', url, requestData, headers);
             setItemsFromOrder([]);
@@ -266,9 +264,7 @@ const Order = () => {
     return (
         <Home>
             <>
-
                 <h2 className='tables-title-order'>{tableVisible ? "ORDERS" : "CREATE NEW ORDER"}</h2>
-
                 <div className="buttons-container">
                     <button disabled={tableVisible} className={tableVisible ? 'buttons' : 'buttons1'} onClick={() => { settableVisible(true); fetchOrders(); }}>LIST ORDERS</button>
                     <button disabled={!tableVisible} className={tableVisible ? 'buttons1' : 'buttons'} onClick={() => { settableVisible(false); }}>CREATE NEW ORDER</button>
@@ -340,7 +336,6 @@ const Order = () => {
                                                     <th>Selling price</th>
                                                     <th>VAT Id</th>
                                                     <th>Quantity</th>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -362,72 +357,6 @@ const Order = () => {
                                 </div>
                             </div>
                         )}
-                    </div>)}
-                {!tableVisible && (
-                    <div className='create-order'>
-                        <h3 className='order-items-title'>ITEMS FROM YOUR ORDER</h3>
-                        <button
-                            className='buttons1 create-order-button'
-                            onClick={createOrder}
-                            disabled={itemsFromOrder.length === 0}
-                        >
-                            CREATE ORDER
-                        </button>
-                        <button className='buttons1' onClick={() => { setModalChooseItemsVisible(true); handleChooseItems() }}>CHOOSE ITEMS</button><br />
-                        <input type="text" readOnly id="findTable" className="table-id-input" placeholder="Table ID" value={tableId} onChange={(e) => setTableId(e.target.value)} />
-                        <button className='select-table-button buttons1' onClick={() => { setModalTableVisible(true); fetchTables() }}>Find Table</button>
-                        <button className='select-table-button buttons1' onClick={() => { setTableId('') }}>Remove Table</button>
-                        {modalChooseItemsVisible && (
-                            <div className="modal-choose-items">
-                                <div className="modal-content-choose-items">
-                                    <img src={close_modal_icon} onClick={() => setModalChooseItemsVisible(false)} alt="Close" className="close-modal-icon" />
-                                    {
-                                        Cookies.get('hasStorage') === 'true'
-                                            ? <h2>STORAGE ITEMS</h2>
-                                            : <h2>ITEMS</h2>
-                                    }
-                                    <div className='table3'>
-                                        <table border="1">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>BAR-code</th>
-                                                    <th>Measurement</th>
-                                                    <th>Purchase price</th>
-                                                    <th>Selling price</th>
-                                                    <th>VAT Id</th>
-                                                    {
-                                                        Cookies.get('hasStorage') === 'true' &&
-                                                        <th>Available quantity</th>
-                                                    }
-                                                    <th>Quantity</th>
-                                                    <th>Add to order</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {items.map(item => (
-
-                                                    <tr key={item.id}>
-                                                        <td>{item.id}</td>
-                                                        <td>{item.name}</td>
-                                                        <td>{item.barCode}</td>
-                                                        <td>{item.measurmentUnit}</td>
-                                                        <td>{item.purchasePrice}</td>
-                                                        <td>{item.sellingPrice}</td>
-
-                                                        <td>{item.VAT.id}</td>
-                                                        <td>{item.quantity}</td>
-
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
                     </div>)}
                 {!tableVisible && (
                     <div className='create-order'>
@@ -503,7 +432,6 @@ const Order = () => {
                             </div>
                         )}
 
-
                         <div className='table4'>
                             <table border="1">
                                 <thead>
@@ -519,9 +447,7 @@ const Order = () => {
                                             Cookies.get('hasStorage') === 'true' &&
                                             <th>Available quantity</th>
                                         }
-
                                         <th className='quantity'>Quantity</th>
-
                                         <th>Remove</th>
                                     </tr>
                                 </thead>
@@ -539,7 +465,6 @@ const Order = () => {
                                                 Cookies.get('hasStorage') === 'true' &&
                                                 <td>{item.StorageItem.quantity}</td>
                                             }
-
                                             <td className='editable-cell-purchase-orders quantity'>
                                                 <img
                                                     src={plus_icon}
@@ -551,7 +476,6 @@ const Order = () => {
                                                         setItemsFromOrder(newItems);
                                                     }}
                                                 />
-
                                                 <input
                                                     type="number"
                                                     value={item.quantity}
@@ -562,7 +486,6 @@ const Order = () => {
                                                         setItemsFromOrder(newItems);
                                                     }}
                                                 />
-
                                                 <img
                                                     src={minus_icon}
                                                     alt="Minus"
@@ -574,7 +497,6 @@ const Order = () => {
                                                         setItemsFromOrder(newItems);
                                                     }}
                                                 />
-
                                             </td>
                                             <td>
                                                 <img src={minus_icon} alt="Minus" className='minus_icon' onClick={() => handleRemoveFromOrder(index)} />
