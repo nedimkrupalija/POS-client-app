@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Order.css';
 import Cookies from 'js-cookie';
 import delete_icon from '../../assets/delete.png';
@@ -10,6 +10,10 @@ import plus_icon from '../../assets/plus.png';
 import minus_icon from '../../assets/minus.png';
 import choose_icon from '../../assets/choose.png';
 import Home from '../Home/Home';
+
+import Keyboard from 'react-simple-keyboard';
+import 'react-simple-keyboard/build/css/index.css';
+
 const Order = () => {
     const [tableVisible, settableVisible] = useState(true);
     const [orders, setOrders] = useState([]);
@@ -17,11 +21,45 @@ const Order = () => {
     const [tables, setTables] = useState([]);
     const [itemsFromOrder, setItemsFromOrder] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalKeyboardVisible, setModalKeyboardVisible] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [modalChooseItemsVisible, setModalChooseItemsVisible] = useState(false);
+    const [closeItemsModalVisible, setCloseItemsModalVisible] = useState(true);
+    const [closeKeyboardModalVisible, setCloseKeyboardModalVisible] = useState(false);
     const [modalTableVisible, setModalTableVisible] = useState(false);
     const [tableId, setTableId] = useState('');
     const [status, setStatus] = useState('');
+    const [holdedItem, setHoldedItem] = useState(null)
+    const [input, setInput] = useState('');
+    const [longPress, setLongPress] = useState(false);
+    const timeoutRef = useRef(null);
+
+    const onKeyPress = (button) => {
+        if (button === "{bksp}") {
+            setInput((prevInput) => prevInput.slice(0, -1));
+        } else if (!isNaN(button)) {
+            setInput((prevInput) => prevInput + button);
+        }
+    };
+
+    const handleMouseDown = (item, quantity) => {
+        timeoutRef.current = setTimeout(() => {
+            setLongPress(true);
+            setHoldedItem(item)
+            setModalKeyboardVisible(true);
+            setCloseItemsModalVisible(false);
+            setCloseKeyboardModalVisible(true);
+        }, 500);
+    };
+
+    const handleMouseUp = (item, quantity) => {
+        clearTimeout(timeoutRef.current);
+        if (!longPress) {
+            handleAddToOrder(item, quantity)
+        } else {
+        }
+        setLongPress(false);
+    };
 
 
     const token = () => {
@@ -75,13 +113,13 @@ const Order = () => {
                 .then(response1 => {
                     fetchData('GET', 'https://pos-app-backend-tim56.onrender.com/location/' + Cookies.get('location') + '/tables', null, headers).then(response => {
 
-                        console.log(Cookies.get('userid'));
-                        console.log("response", response);
-                        const orders = response1.filter(order => {
-                            return response.some(table => table.id === order.tableId) || order.tableId === null;
-                        });
+                    console.log(Cookies.get('userid'));
+                    console.log("response", response);
+                    const orders = response1.filter(order => {
+                        return response.some(table => table.id === order.TableId) || order.TableId === null;
+                    });
 
-                        setOrders(orders)
+                    setOrders(orders)
                     }).catch(error => {
                         console.error('Error fetching purcshase orders:', error);
 
@@ -187,6 +225,13 @@ const Order = () => {
     };
 
     const handleAddToOrder = (item, quantity) => {
+        if(!quantity) {
+            setCloseKeyboardModalVisible(false);
+            setModalKeyboardVisible(false);
+            setCloseItemsModalVisible(true);
+            setInput('');
+            return;
+        }
         const parsedQuantity = parseFloat(quantity);
 
         const existingItemIndex = itemsFromOrder.findIndex(orderItem => orderItem.id === item.id);
@@ -199,6 +244,10 @@ const Order = () => {
             const newItem = { ...item, quantity: parsedQuantity };
             setItemsFromOrder([...itemsFromOrder, newItem]);
         }
+        setCloseKeyboardModalVisible(false);
+        setModalKeyboardVisible(false);
+        setCloseItemsModalVisible(true);
+        setInput('');
     };
 
     const handleRemoveFromOrder = (index) => {
@@ -375,7 +424,7 @@ const Order = () => {
                         {modalChooseItemsVisible && (
                             <div className="modal-choose-items">
                                 <div className="modal-content-choose-items">
-                                    <img src={close_modal_icon} onClick={() => setModalChooseItemsVisible(false)} alt="Close" className="close-modal-icon" />
+                                    {closeItemsModalVisible && <img src={close_modal_icon} onClick={() => { setModalChooseItemsVisible(false); setModalKeyboardVisible(false) }} alt="Close" className="close-modal-icon" />}
                                     {
                                         Cookies.get('hasStorage') === 'true'
                                             ? <h2>STORAGE ITEMS</h2>
@@ -383,15 +432,18 @@ const Order = () => {
                                     }
                                     <div className='grid'>
                                         {items.map(item => (
-                                            <div key={item.id} className='grid-item'>
+                                            <div key={item.id}
+                                                className='grid-item'
+                                                onMouseDown={() => { handleMouseDown(item, 1) }}
+                                                onMouseUp={() => { handleMouseUp(item, 1) }}>
                                                 <h3>{item.name}</h3>
-                                                <p><strong>ID:</strong> {item.id}</p>
+                                                {/*  <p><strong>ID:</strong> {item.id}</p>
                                                 <p><strong>BAR-code:</strong> {item.barCode}</p>
                                                 <p><strong>Measurement:</strong> {item.measurmentUnit}</p>
                                                 <p><strong>Purchase price:</strong> {item.purchasePrice}</p>
                                                 <p><strong>Selling price:</strong> {item.sellingPrice}</p>
                                                 <p><strong>VAT Id:</strong> {item.VAT ? item.VAT.id : item.VATId}</p>
-                                                {Cookies.get('hasStorage') === 'true' && <p><strong>Available quantity:</strong> {item.StorageItem.quantity}</p>}
+                                        {Cookies.get('hasStorage') === 'true' && <p><strong>Available quantity:</strong> {item.StorageItem.quantity}</p>}
                                                 <div className='quantity'>
                                                     <img
                                                         src={plus_icon}
@@ -423,11 +475,34 @@ const Order = () => {
                                                         }}
                                                     />
                                                 </div>
-                                                <button className="add-to-order-button" onClick={() => handleAddToOrder(item, parseInt(document.getElementById(`quantity_${item.id}`).value))}>Add to Order</button>
+                                                <button className="add-to-order-button" onClick={() => handleAddToOrder(item, parseInt(document.getElementById(`quantity_${item.id}`).value))}>Add to Order</button>*/}
                                             </div>
                                         ))}
                                     </div>
-
+                                    {modalKeyboardVisible && holdedItem && (
+                                        <div className="modal-keyboard-input">
+                                            <div className="modal-content-keyboard-input">
+                                                {closeKeyboardModalVisible && <img src={close_modal_icon} onClick={() => { setModalKeyboardVisible(false); setCloseItemsModalVisible(true); setCloseKeyboardModalVisible(false); setInput('') }} alt="Close" className="close-modal-icon" />}
+                                                <h2>Enter quantity for {holdedItem.name}</h2>
+                                                <div>
+                                                    <input
+                                                        id={`quantity_${holdedItem.id}`}
+                                                        type="text"
+                                                        value={input}
+                                                        onChange={(e) => setInput(e.target.value)}
+                                                        className='keyboard-input'
+                                                    />
+                                                    <Keyboard
+                                                        layout={{
+                                                            default: ['1 2 3', '4 5 6', '7 8 9', '{bksp} 0']
+                                                        }}
+                                                        onKeyPress={onKeyPress}
+                                                    />
+                                                </div>
+                                                <button className='buttons1 add-to-order' onClick={() => handleAddToOrder(holdedItem, parseInt(document.getElementById(`quantity_${holdedItem.id}`).value))}>ADD</button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
