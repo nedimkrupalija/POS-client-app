@@ -33,6 +33,7 @@ const Order = () => {
     const [input, setInput] = useState('');
     const [longPress, setLongPress] = useState(false);
     const timeoutRef = useRef(null);
+    
 
     const onKeyPress = (button) => {
         if (button === "{bksp}") {
@@ -113,13 +114,13 @@ const Order = () => {
                 .then(response1 => {
                     fetchData('GET', 'https://pos-app-backend-tim56.onrender.com/location/' + Cookies.get('location') + '/tables', null, headers).then(response => {
 
-                    console.log(Cookies.get('userid'));
-                    console.log("response", response);
-                    const orders = response1.filter(order => {
-                        return response.some(table => table.id === order.TableId) || order.TableId === null;
-                    });
+                        console.log(Cookies.get('userid'));
+                        console.log("response", response);
+                        const orders = response1.filter(order => {
+                            return response.some(table => table.id === order.TableId) || order.TableId === null;
+                        });
 
-                    setOrders(orders)
+                        setOrders(orders)
                     }).catch(error => {
                         console.error('Error fetching purcshase orders:', error);
 
@@ -225,7 +226,7 @@ const Order = () => {
     };
 
     const handleAddToOrder = (item, quantity) => {
-        if(!quantity) {
+        if (!quantity) {
             setCloseKeyboardModalVisible(false);
             setModalKeyboardVisible(false);
             setCloseItemsModalVisible(true);
@@ -249,7 +250,39 @@ const Order = () => {
         setCloseItemsModalVisible(true);
         setInput('');
     };
-
+    const handleAddToOrderFromKeyboard = (item, quantity) => {
+        if (quantity === null) {
+            setCloseKeyboardModalVisible(false);
+            setModalKeyboardVisible(false);
+            setCloseItemsModalVisible(true);
+            setInput('');
+            console.log("Ok")
+            return;
+        }
+        const parsedQuantity = parseFloat(quantity);
+        if (parsedQuantity === 0) {
+            const updatedItems = itemsFromOrder.filter(orderItem => orderItem.id !== item.id);
+            setItemsFromOrder(updatedItems);
+            setCloseKeyboardModalVisible(false);
+            setModalKeyboardVisible(false);
+            setCloseItemsModalVisible(true);
+            setInput('');
+            return;
+        }
+        const existingItemIndex = itemsFromOrder.findIndex(orderItem => orderItem.id === item.id);
+        if (existingItemIndex !== -1) {
+            const updatedItems = [...itemsFromOrder];
+            updatedItems[existingItemIndex].quantity = parsedQuantity;
+            setItemsFromOrder(updatedItems);
+        } else {
+            const newItem = { ...item, quantity: parsedQuantity };
+            setItemsFromOrder([...itemsFromOrder, newItem]);
+        }
+        setCloseKeyboardModalVisible(false);
+        setModalKeyboardVisible(false);
+        setCloseItemsModalVisible(true);
+        setInput('');
+    };
     const handleRemoveFromOrder = (index) => {
         const updatedItems = [...itemsFromOrder];
         updatedItems.splice(index, 1);
@@ -431,53 +464,20 @@ const Order = () => {
                                             : <h2>ITEMS</h2>
                                     }
                                     <div className='grid'>
-                                        {items.map(item => (
-                                            <div key={item.id}
-                                                className='grid-item'
-                                                onMouseDown={() => { handleMouseDown(item, 1) }}
-                                                onMouseUp={() => { handleMouseUp(item, 1) }}>
-                                                <h3>{item.name}</h3>
-                                                {/*  <p><strong>ID:</strong> {item.id}</p>
-                                                <p><strong>BAR-code:</strong> {item.barCode}</p>
-                                                <p><strong>Measurement:</strong> {item.measurmentUnit}</p>
-                                                <p><strong>Purchase price:</strong> {item.purchasePrice}</p>
-                                                <p><strong>Selling price:</strong> {item.sellingPrice}</p>
-                                                <p><strong>VAT Id:</strong> {item.VAT ? item.VAT.id : item.VATId}</p>
-                                        {Cookies.get('hasStorage') === 'true' && <p><strong>Available quantity:</strong> {item.StorageItem.quantity}</p>}
-                                                <div className='quantity'>
-                                                    <img
-                                                        src={plus_icon}
-                                                        alt="Plus"
-                                                        className='plus_icon'
-                                                        onClick={() => {
-                                                            const quantityInput = document.getElementById(`quantity_${item.id}`);
-                                                            if (quantityInput) {
-                                                                quantityInput.value = parseInt(quantityInput.value) + 1;
-                                                            }
-                                                        }}
-                                                    />
-                                                    <input
-                                                        type="number"
-                                                        id={`quantity_${item.id}`}
-                                                        className="editable-input-purchase-orders"
-                                                        placeholder='Quantity'
-                                                        defaultValue={1}
-                                                    />
-                                                    <img
-                                                        src={minus_icon}
-                                                        alt="Minus"
-                                                        className='minus_icon'
-                                                        onClick={() => {
-                                                            const quantityInput = document.getElementById(`quantity_${item.id}`);
-                                                            if (quantityInput) {
-                                                                quantityInput.value = parseInt(quantityInput.value) - 1 >= 0 ? parseInt(quantityInput.value) - 1 : 0;
-                                                            }
-                                                        }}
-                                                    />
+                                        {items.map(item => {
+                                            const currentItemIndex = itemsFromOrder.findIndex(orderItem => orderItem.id === item.id);
+                                            const currentItem = currentItemIndex !== -1 ? itemsFromOrder[currentItemIndex] : null;
+                                            return (
+                                                <div key={item.id}
+                                                    className='grid-item'
+                                                    onMouseDown={() => { handleMouseDown(item, 1) }}
+                                                    onMouseUp={() => { handleMouseUp(item, 1) }}>
+                                                    <h3>{item.name}</h3>
+                                                    <p>{item.sellingPrice} $</p>
+                                                    {currentItem && <p>Currently Added: {currentItem.quantity}</p>}
                                                 </div>
-                                                <button className="add-to-order-button" onClick={() => handleAddToOrder(item, parseInt(document.getElementById(`quantity_${item.id}`).value))}>Add to Order</button>*/}
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                     {modalKeyboardVisible && holdedItem && (
                                         <div className="modal-keyboard-input">
@@ -499,7 +499,7 @@ const Order = () => {
                                                         onKeyPress={onKeyPress}
                                                     />
                                                 </div>
-                                                <button className='buttons1 add-to-order' onClick={() => handleAddToOrder(holdedItem, parseInt(document.getElementById(`quantity_${holdedItem.id}`).value))}>ADD</button>
+                                                <button className='buttons1 add-to-order' onClick={() => {handleAddToOrderFromKeyboard(holdedItem, parseInt(document.getElementById(`quantity_${holdedItem.id}`).value))}}>ADD</button>
                                             </div>
                                         </div>
                                     )}
