@@ -341,10 +341,19 @@ body {
     padding: 20px;
     border-radius: 10px;
     cursor: pointer;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
 }
 
-.grid-item h3 {
+.grid-item h3,
+.grid-item-price,
+.grid-item p,
+.grid-item button {
     text-align: center; 
+}
+.grid-item-price {
+    font-size: 20px;
 }
 
 .grid-item p {
@@ -417,4 +426,13 @@ body {
 .add-to-order {
     height: 70px;
     width: 200px;
+}
+.remove-from-order {
+    width: 150px;
+    height: 50px;
+}
+.items-from-order-grid {
+    margin-left: 70px;
+    margin-top: 20px;
+    padding-bottom: 20px;
 }
