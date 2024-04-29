@@ -321,7 +321,7 @@ const Order = () => {
             const requestData = {
 
                 items: itemsFromOrder.map(item => ({ id: item.id, quantity: item.quantity })),
-                ...(tableId && { tableId: parseInt(tableId) }),
+                ...(tableId && { TableId: parseInt(tableId) }),
                 ...({ status: "pending" }),
                 ...({ locationId: Cookies.get('location') })
             };
@@ -380,7 +380,7 @@ const Order = () => {
                                             <td>{order.grandTotal}</td>
 
 
-                                            <td>{order.tableId || 'Not assigned'}</td>
+                                            <td>{order.TableId || 'Not assigned'}</td>
                                             <td>{order.status}</td>
                                             <td>
                                                 <img src={items_icon} alt="Items" className='items_icon' onClick={() => openModal(order)} />
@@ -561,25 +561,17 @@ const Order = () => {
                         <div className="modal-table-content">
                             <img src={close_modal_icon} onClick={() => setModalTableVisible(false)} alt="Close" className="close-modal-icon" />
                             <h2 className='select-table-title'>TABLES ASSIGNED TO YOU</h2>
-                            <div className='table5'>
-                                <table border="1">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {tables.map(table => (
-                                            <tr key={table.id}>
-                                                <td>{table.id}</td>
-                                                <td>{table.name}</td>
-                                                <td><img onClick={() => { setTableId(table.id); setModalTableVisible(false); }} src={choose_icon} alt="Choose" className='choose-icon' /></td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+
+                            <div className='grid'>
+                                {tables.map(table => {
+                                    return (
+                                        <div key={table.id}
+                                            className='grid-item'
+                                            onClick={() => { setTableId(table.id); setModalTableVisible(false); }}>
+                                            <h3>{table.name}</h3>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
