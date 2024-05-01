@@ -10,6 +10,7 @@ import plus_icon from '../../assets/plus.png';
 import minus_icon from '../../assets/minus.png';
 import choose_icon from '../../assets/choose.png';
 import Home from '../Home/Home';
+import { FaPrint } from 'react-icons/fa';
 
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
@@ -102,10 +103,8 @@ const Order = () => {
     };
 
     const fetchOrders = async () => {
-        console.log("Uslo");
         const locationId = Cookies.get('location');
         const userId = Cookies.get('userid');
-        console.log("lokacija", locationId)
         if (locationId && userId) {
             const headers = {
                 Authorization: token()
@@ -113,9 +112,7 @@ const Order = () => {
             fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order/location/${locationId}`, null, headers)
                 .then(response1 => {
                     fetchData('GET', 'https://pos-app-backend-tim56.onrender.com/location/' + Cookies.get('location') + '/tables', null, headers).then(response => {
-
-                        console.log(Cookies.get('userid'));
-                        console.log("response", response);
+console.log(response);
                         const orders = response1.filter(order => {
                             return response.some(table => table.id === order.TableId) || order.TableId === null;
                         });
@@ -341,7 +338,39 @@ const Order = () => {
             console.error('Error creating order:', error);
         }
     };
-
+    const printInvoice = async (order) => {
+        try {
+          
+            const url = `https://pos-app-backend-tim56.onrender.com/purchase-order/${order.id}`;
+const response1=await fetch(url, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+        Authorization: token()
+        }});         
+        const data = await response1.json(); 
+        console.log(data); 
+                    const response = await fetch('https://pos-app-backend-tim56.onrender.com/purchase-order/invoice-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token()
+                },
+                body: JSON.stringify({ tableData: data })
+            });
+            if (response.ok) {
+                const pdfBlob = await response.blob();
+                
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+    
+                window.open(pdfUrl, '_blank');
+            } else {
+                console.error('Error generating PDF:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error printing invoice:', error);
+        }
+    };
 
     return (
         <Home>
@@ -385,16 +414,15 @@ const Order = () => {
                                             <td>
                                                 <img src={items_icon} alt="Items" className='items_icon' onClick={() => openModal(order)} />
                                             </td>
-                                            <td>
-                                                <img src={items_icon} alt="Finish" className='items_icon' onClick={() => {
-                                                    if (order.status == 'pending') {
-                                                        finishOrder(order)
-                                                    }
-                                                    else {
-                                                        alert("Order is already finished")
-                                                    }
-                                                }} />
-                                            </td>
+                                            {order.status === 'pending' ? (
+    <td>
+        <img src={items_icon} alt="Finish" className='items_icon' onClick={() => finishOrder(order)} />
+    </td>
+) : (
+    <td>
+        <button onClick={() => printInvoice(order)}><FaPrint/></button>
+    </td>
+)}
 
                                         </tr>
                                     ))}
