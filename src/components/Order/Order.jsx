@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Order.css';
 import Cookies from 'js-cookie';
 import delete_icon from '../../assets/delete.png';
@@ -10,6 +10,10 @@ import plus_icon from '../../assets/plus.png';
 import minus_icon from '../../assets/minus.png';
 import choose_icon from '../../assets/choose.png';
 import Home from '../Home/Home';
+
+import Keyboard from 'react-simple-keyboard';
+import 'react-simple-keyboard/build/css/index.css';
+
 const Order = () => {
     const [tableVisible, settableVisible] = useState(true);
     const [orders, setOrders] = useState([]);
@@ -17,11 +21,46 @@ const Order = () => {
     const [tables, setTables] = useState([]);
     const [itemsFromOrder, setItemsFromOrder] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalKeyboardVisible, setModalKeyboardVisible] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [modalChooseItemsVisible, setModalChooseItemsVisible] = useState(false);
+    const [closeItemsModalVisible, setCloseItemsModalVisible] = useState(true);
+    const [closeKeyboardModalVisible, setCloseKeyboardModalVisible] = useState(false);
     const [modalTableVisible, setModalTableVisible] = useState(false);
     const [tableId, setTableId] = useState('');
     const [status, setStatus] = useState('');
+    const [holdedItem, setHoldedItem] = useState(null)
+    const [input, setInput] = useState('');
+    const [longPress, setLongPress] = useState(false);
+    const timeoutRef = useRef(null);
+
+
+    const onKeyPress = (button) => {
+        if (button === "{bksp}") {
+            setInput((prevInput) => prevInput.slice(0, -1));
+        } else if (!isNaN(button)) {
+            setInput((prevInput) => prevInput + button);
+        }
+    };
+
+    const handleMouseDown = (item, quantity) => {
+        timeoutRef.current = setTimeout(() => {
+            setLongPress(true);
+            setHoldedItem(item)
+            setModalKeyboardVisible(true);
+            setCloseItemsModalVisible(false);
+            setCloseKeyboardModalVisible(true);
+        }, 500);
+    };
+
+    const handleMouseUp = (item, quantity) => {
+        clearTimeout(timeoutRef.current);
+        if (!longPress) {
+            handleAddToOrder(item, quantity)
+        } else {
+        }
+        setLongPress(false);
+    };
 
 
     const token = () => {
@@ -78,7 +117,7 @@ const Order = () => {
                         console.log(Cookies.get('userid'));
                         console.log("response", response);
                         const orders = response1.filter(order => {
-                            return response.some(table => table.id === order.tableId) || order.tableId === null;
+                            return response.some(table => table.id === order.TableId) || order.TableId === null;
                         });
 
                         setOrders(orders)
@@ -187,6 +226,13 @@ const Order = () => {
     };
 
     const handleAddToOrder = (item, quantity) => {
+        if (!quantity) {
+            setCloseKeyboardModalVisible(false);
+            setModalKeyboardVisible(false);
+            setCloseItemsModalVisible(true);
+            setInput('');
+            return;
+        }
         const parsedQuantity = parseFloat(quantity);
 
         const existingItemIndex = itemsFromOrder.findIndex(orderItem => orderItem.id === item.id);
@@ -199,8 +245,44 @@ const Order = () => {
             const newItem = { ...item, quantity: parsedQuantity };
             setItemsFromOrder([...itemsFromOrder, newItem]);
         }
+        setCloseKeyboardModalVisible(false);
+        setModalKeyboardVisible(false);
+        setCloseItemsModalVisible(true);
+        setInput('');
     };
-
+    const handleAddToOrderFromKeyboard = (item, quantity) => {
+        if (quantity === null) {
+            setCloseKeyboardModalVisible(false);
+            setModalKeyboardVisible(false);
+            setCloseItemsModalVisible(true);
+            setInput('');
+            console.log("Ok")
+            return;
+        }
+        const parsedQuantity = parseFloat(quantity);
+        if (parsedQuantity === 0) {
+            const updatedItems = itemsFromOrder.filter(orderItem => orderItem.id !== item.id);
+            setItemsFromOrder(updatedItems);
+            setCloseKeyboardModalVisible(false);
+            setModalKeyboardVisible(false);
+            setCloseItemsModalVisible(true);
+            setInput('');
+            return;
+        }
+        const existingItemIndex = itemsFromOrder.findIndex(orderItem => orderItem.id === item.id);
+        if (existingItemIndex !== -1) {
+            const updatedItems = [...itemsFromOrder];
+            updatedItems[existingItemIndex].quantity = parsedQuantity;
+            setItemsFromOrder(updatedItems);
+        } else {
+            const newItem = { ...item, quantity: parsedQuantity };
+            setItemsFromOrder([...itemsFromOrder, newItem]);
+        }
+        setCloseKeyboardModalVisible(false);
+        setModalKeyboardVisible(false);
+        setCloseItemsModalVisible(true);
+        setInput('');
+    };
     const handleRemoveFromOrder = (index) => {
         const updatedItems = [...itemsFromOrder];
         updatedItems.splice(index, 1);
@@ -239,7 +321,7 @@ const Order = () => {
             const requestData = {
 
                 items: itemsFromOrder.map(item => ({ id: item.id, quantity: item.quantity })),
-                ...(tableId && { tableId: parseInt(tableId) }),
+                ...(tableId && { TableId: parseInt(tableId) }),
                 ...({ status: "pending" }),
                 ...({ locationId: Cookies.get('location') })
             };
@@ -298,7 +380,7 @@ const Order = () => {
                                             <td>{order.grandTotal}</td>
 
 
-                                            <td>{order.tableId || 'Not assigned'}</td>
+                                            <td>{order.TableId || 'Not assigned'}</td>
                                             <td>{order.status}</td>
                                             <td>
                                                 <img src={items_icon} alt="Items" className='items_icon' onClick={() => openModal(order)} />
@@ -375,137 +457,103 @@ const Order = () => {
                         {modalChooseItemsVisible && (
                             <div className="modal-choose-items">
                                 <div className="modal-content-choose-items">
-                                    <img src={close_modal_icon} onClick={() => setModalChooseItemsVisible(false)} alt="Close" className="close-modal-icon" />
+                                    {closeItemsModalVisible && <img src={close_modal_icon} onClick={() => { setModalChooseItemsVisible(false); setModalKeyboardVisible(false) }} alt="Close" className="close-modal-icon" />}
                                     {
                                         Cookies.get('hasStorage') === 'true'
                                             ? <h2>STORAGE ITEMS</h2>
                                             : <h2>ITEMS</h2>
                                     }
                                     <div className='grid'>
-                                        {items.map(item => (
-                                            <div key={item.id} className='grid-item'>
-                                                <h3>{item.name}</h3>
-                                                <p><strong>ID:</strong> {item.id}</p>
-                                                <p><strong>BAR-code:</strong> {item.barCode}</p>
-                                                <p><strong>Measurement:</strong> {item.measurmentUnit}</p>
-                                                <p><strong>Purchase price:</strong> {item.purchasePrice}</p>
-                                                <p><strong>Selling price:</strong> {item.sellingPrice}</p>
-                                                <p><strong>VAT Id:</strong> {item.VAT ? item.VAT.id : item.VATId}</p>
-                                                {Cookies.get('hasStorage') === 'true' && <p><strong>Available quantity:</strong> {item.StorageItem.quantity}</p>}
-                                                <div className='quantity'>
-                                                    <img
-                                                        src={plus_icon}
-                                                        alt="Plus"
-                                                        className='plus_icon'
-                                                        onClick={() => {
-                                                            const quantityInput = document.getElementById(`quantity_${item.id}`);
-                                                            if (quantityInput) {
-                                                                quantityInput.value = parseInt(quantityInput.value) + 1;
-                                                            }
-                                                        }}
-                                                    />
+                                        {items.map(item => {
+                                            const currentItemIndex = itemsFromOrder.findIndex(orderItem => orderItem.id === item.id);
+                                            const currentItem = currentItemIndex !== -1 ? itemsFromOrder[currentItemIndex] : null;
+                                            return (
+                                                <div key={item.id}
+                                                    className='grid-item'
+                                                    onMouseDown={() => { handleMouseDown(item, 1) }}
+                                                    onMouseUp={() => { handleMouseUp(item, 1) }}>
+                                                    <h3>{item.name}</h3>
+                                                    <p className='grid-item-price'>{item.sellingPrice} $</p>
+                                                    {currentItem && <p>Quantity: {currentItem.quantity}</p>}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    {modalKeyboardVisible && holdedItem && (
+                                        <div className="modal-keyboard-input">
+                                            <div className="modal-content-keyboard-input">
+                                                {closeKeyboardModalVisible && <img src={close_modal_icon} onClick={() => { setModalKeyboardVisible(false); setCloseItemsModalVisible(true); setCloseKeyboardModalVisible(false); setInput('') }} alt="Close" className="close-modal-icon" />}
+                                                <h2>Enter quantity for {holdedItem.name}</h2>
+                                                <div>
                                                     <input
-                                                        type="number"
-                                                        id={`quantity_${item.id}`}
-                                                        className="editable-input-purchase-orders"
-                                                        placeholder='Quantity'
-                                                        defaultValue={1}
+                                                        id={`quantity_${holdedItem.id}`}
+                                                        type="text"
+                                                        value={input}
+                                                        onChange={(e) => setInput(e.target.value)}
+                                                        className='keyboard-input'
                                                     />
-                                                    <img
-                                                        src={minus_icon}
-                                                        alt="Minus"
-                                                        className='minus_icon'
-                                                        onClick={() => {
-                                                            const quantityInput = document.getElementById(`quantity_${item.id}`);
-                                                            if (quantityInput) {
-                                                                quantityInput.value = parseInt(quantityInput.value) - 1 >= 0 ? parseInt(quantityInput.value) - 1 : 0;
-                                                            }
+                                                    <Keyboard
+                                                        layout={{
+                                                            default: ['1 2 3', '4 5 6', '7 8 9', '{bksp} 0']
                                                         }}
+                                                        onKeyPress={onKeyPress}
                                                     />
                                                 </div>
-                                                <button className="add-to-order-button" onClick={() => handleAddToOrder(item, parseInt(document.getElementById(`quantity_${item.id}`).value))}>Add to Order</button>
+                                                <button className='buttons1 add-to-order' onClick={() => { handleAddToOrderFromKeyboard(holdedItem, parseInt(document.getElementById(`quantity_${holdedItem.id}`).value)) }}>ADD</button>
                                             </div>
-                                        ))}
-                                    </div>
-
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
 
-                        <div className='table4'>
-                            <table border="1">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>BAR-code</th>
-                                        <th>Measurement</th>
-                                        <th>Purchase price</th>
-                                        <th>Selling price</th>
-                                        <th>VAT Id</th>
-                                        {
-                                            Cookies.get('hasStorage') === 'true' &&
-                                            <th>Available quantity</th>
-                                        }
-                                        <th className='quantity'>Quantity</th>
-                                        <th>Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {itemsFromOrder.map((item, index) => (
-                                        <tr key={index}>
-                                            <td>{item.id}</td>
-                                            <td>{item.name}</td>
-                                            <td>{item.barCode}</td>
-                                            <td>{item.measurmentUnit}</td>
-                                            <td>{item.purchasePrice}</td>
-                                            <td>{item.sellingPrice}</td>
-                                            <td>{item.VAT ? item.VAT.id : item.VATId}</td>
-                                            {
-                                                Cookies.get('hasStorage') === 'true' &&
-                                                <td>{item.StorageItem.quantity}</td>
-                                            }
-                                            <td className='editable-cell-purchase-orders quantity'>
-                                                <img
-                                                    src={plus_icon}
-                                                    alt="Plus"
-                                                    className='plus_icon'
-                                                    onClick={() => {
-                                                        const newItems = [...itemsFromOrder];
-                                                        newItems[index].quantity = parseInt(newItems[index].quantity) + 1; // Povećaj za 1
-                                                        setItemsFromOrder(newItems);
-                                                    }}
-                                                />
-                                                <input
-                                                    type="number"
-                                                    value={item.quantity}
-                                                    className="editable-input-purchase-orders"
-                                                    onChange={(e) => {
-                                                        const newItems = [...itemsFromOrder];
-                                                        newItems[index].quantity = e.target.value;
-                                                        setItemsFromOrder(newItems);
-                                                    }}
-                                                />
-                                                <img
-                                                    src={minus_icon}
-                                                    alt="Minus"
-                                                    className='minus_icon'
-                                                    onClick={() => {
-                                                        const newItems = [...itemsFromOrder];
-                                                        const updatedQuantity = parseInt(newItems[index].quantity) - 1;
-                                                        newItems[index].quantity = updatedQuantity >= 0 ? updatedQuantity : 0; // Smanji za 1, minimalno 0
-                                                        setItemsFromOrder(newItems);
-                                                    }}
-                                                />
-                                            </td>
-                                            <td>
-                                                <img src={minus_icon} alt="Minus" className='minus_icon' onClick={() => handleRemoveFromOrder(index)} />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div className='grid items-from-order-grid'>
+                            {itemsFromOrder.map(item => {
+                                return (
+                                    <div key={item.id}
+                                        className='grid-item'
+                                        onMouseDown={() => { handleMouseDown(item, 1) }}
+                                        onMouseUp={() => { handleMouseUp(item, 1) }}>
+                                        <h3>{item.name}</h3>
+                                        <p className='grid-item-price'>{item.sellingPrice} $</p>
+                                        <p>Quantity: {item.quantity}</p>
+                                        <button
+                                            className='buttons1 remove-from-order'
+                                            onClick={() => {
+                                                const updatedItems = itemsFromOrder.filter(orderItem => orderItem.id !== item.id);
+                                                setItemsFromOrder(updatedItems);
+                                            }}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </div>
+                        {modalKeyboardVisible && holdedItem && (
+                            <div className="modal-keyboard-input">
+                                <div className="modal-content-keyboard-input">
+                                    {closeKeyboardModalVisible && <img src={close_modal_icon} onClick={() => { setModalKeyboardVisible(false); setCloseItemsModalVisible(true); setCloseKeyboardModalVisible(false); setInput('') }} alt="Close" className="close-modal-icon" />}
+                                    <h2>Enter quantity for {holdedItem.name}</h2>
+                                    <div>
+                                        <input
+                                            id={`quantity_${holdedItem.id}`}
+                                            type="text"
+                                            value={input}
+                                            onChange={(e) => setInput(e.target.value)}
+                                            className='keyboard-input'
+                                        />
+                                        <Keyboard
+                                            layout={{
+                                                default: ['1 2 3', '4 5 6', '7 8 9', '{bksp} 0']
+                                            }}
+                                            onKeyPress={onKeyPress}
+                                        />
+                                    </div>
+                                    <button className='buttons1 add-to-order' onClick={() => { handleAddToOrderFromKeyboard(holdedItem, parseInt(document.getElementById(`quantity_${holdedItem.id}`).value)) }}>ADD</button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
                 {modalTableVisible && (
@@ -513,25 +561,17 @@ const Order = () => {
                         <div className="modal-table-content">
                             <img src={close_modal_icon} onClick={() => setModalTableVisible(false)} alt="Close" className="close-modal-icon" />
                             <h2 className='select-table-title'>TABLES ASSIGNED TO YOU</h2>
-                            <div className='table5'>
-                                <table border="1">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {tables.map(table => (
-                                            <tr key={table.id}>
-                                                <td>{table.id}</td>
-                                                <td>{table.name}</td>
-                                                <td><img onClick={() => { setTableId(table.id); setModalTableVisible(false); }} src={choose_icon} alt="Choose" className='choose-icon' /></td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+
+                            <div className='grid'>
+                                {tables.map(table => {
+                                    return (
+                                        <div key={table.id}
+                                            className='grid-item'
+                                            onClick={() => { setTableId(table.id); setModalTableVisible(false); }}>
+                                            <h3>{table.name}</h3>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
