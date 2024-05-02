@@ -103,20 +103,27 @@ const Order = () => {
     };
 
     const fetchOrders = async () => {
+
         const locationId = Cookies.get('location');
         const userId = Cookies.get('userid');
+
         if (locationId && userId) {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order/location/${locationId}`, null, headers)
+            fetchData('GET', `http://localhost:3000/purchase-order/location/${locationId}`, null, headers)
                 .then(response1 => {
+                   
                     fetchData('GET', 'https://pos-app-backend-tim56.onrender.com/location/' + Cookies.get('location') + '/tables', null, headers).then(response => {
-console.log(response);
+
+
+                        
                         const orders = response1.filter(order => {
+                           
+
                             return response.some(table => table.id === order.TableId) || order.TableId === null;
                         });
-
+                       
                         setOrders(orders)
                     }).catch(error => {
                         console.error('Error fetching purcshase orders:', error);
@@ -181,15 +188,24 @@ console.log(response);
                     }))
                 };
                 const checkoutResponse = await fetchData('POST', 'https://pos-app-backend-tim56.onrender.com/pos/checkout', checkoutRequest, headers);
-                console.log('Checkout response:', checkoutResponse);
+               
             }
         } catch (error) {
 
         }
     }
 
-    const openModal = (order) => {
-        setSelectedOrder(order);
+    const openModal = async(order) => {
+        const locationId = Cookies.get('location');
+        const userId = Cookies.get('userid');
+        if (locationId && userId) {
+            const headers = {
+                Authorization: token()
+            };
+            const items = await fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order/${order.id}`, null, headers)
+            setSelectedOrder(items.items);
+        }
+
         setModalVisible(true);
     }
     const handleChooseItems = async () => {
