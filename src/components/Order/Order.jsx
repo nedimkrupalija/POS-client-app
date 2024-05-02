@@ -111,7 +111,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `http://localhost:3000/purchase-order/location/${locationId}`, null, headers)
+            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order/location/${locationId}`, null, headers)
                 .then(response1 => {
                    
                     fetchData('GET', 'https://pos-app-backend-tim56.onrender.com/location/' + Cookies.get('location') + '/tables', null, headers).then(response => {
