@@ -173,10 +173,10 @@ console.log(response);
             setStatus("finshed");
             if (Cookies.get('hasStorage') === 'true') {
                 const checkoutRequest = {
-                    Items: order.items.map(item => ({
+                    Items: order.Items.map(item => ({
                         id: item.id,
                         OrderItems: {
-                            quantity: item.quantity
+                            quantity: item.PurchaseItem.quantity
                         }
                     }))
                 };
@@ -318,7 +318,7 @@ console.log(response);
             const requestData = {
 
                 items: itemsFromOrder.map(item => ({ id: item.id, quantity: item.quantity })),
-                ...(tableId && { TableId: parseInt(tableId) }),
+                ...(tableId && { tableId: parseInt(tableId) }),
                 ...({ status: "pending" }),
                 ...({ locationId: Cookies.get('location') })
             };
@@ -449,7 +449,7 @@ const response1=await fetch(url, {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {selectedOrder.items.map(item => (
+                                                {selectedOrder.Items.map(item => (
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.name}</td>
@@ -457,8 +457,8 @@ const response1=await fetch(url, {
                                                         <td>{item.measurmentUnit}</td>
                                                         <td>{item.purchasePrice}</td>
                                                         <td>{item.sellingPrice}</td>
-                                                        <td>{item.VAT.id}</td>
-                                                        <td>{item.quantity}</td>
+                                                        <td>{item.VATId}</td>
+                                                        <td>{item.PurchaseItem.quantity}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
