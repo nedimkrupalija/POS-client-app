@@ -203,7 +203,8 @@ const Order = () => {
                 Authorization: token()
             };
             const items = await fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order/${order.id}`, null, headers)
-            setSelectedOrder(items.items);
+            setSelectedOrder(items);
+            console.log(items);
         }
 
         setModalVisible(true);
@@ -465,7 +466,7 @@ const response1=await fetch(url, {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {selectedOrder.Items.map(item => (
+                                                {selectedOrder.items.map(item => (
                                                     <tr key={item.id}>
                                                         <td>{item.id}</td>
                                                         <td>{item.name}</td>
