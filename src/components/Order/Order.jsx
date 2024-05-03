@@ -519,6 +519,7 @@ const response1=await fetch(url, {
                                                     onMouseUp={() => { handleMouseUp(item, 1) }}>
                                                     <h3>{item.name}</h3>
                                                     <p className='grid-item-price'>{item.sellingPrice} $</p>
+                                                    {Cookies.get('hasStorage') === 'true' && <p>Available quantity: {item.StorageItem.quantity}</p>}
                                                     {currentItem && <p>Quantity: {currentItem.quantity}</p>}
                                                 </div>
                                             );
@@ -561,6 +562,10 @@ const response1=await fetch(url, {
                                         onMouseUp={() => { handleMouseUp(item, 1) }}>
                                         <h3>{item.name}</h3>
                                         <p className='grid-item-price'>{item.sellingPrice} $</p>
+                                        {
+                                            Cookies.get('hasStorage') === 'true' &&
+                                            <td><p>Available quantity: {item.StorageItem.quantity}</p></td>
+                                        }
                                         <p>Quantity: {item.quantity}</p>
                                         <button
                                             className='buttons1 remove-from-order'
