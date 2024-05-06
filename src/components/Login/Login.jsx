@@ -6,12 +6,14 @@ import personIcon from '../../assets/person.png';
 import passIcon from '../../assets/password.png';
 import errorIcon from '../../assets/error-icon-32.png';
 import './Login.css';
+const apiUrl = import.meta.env.VITE_REACT_API_URL;
+const redirectUrl = import.meta.env.VITE_REACT_REDIRECT;
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [pin, setPin] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const LOGIN_URL = 'https://pos-app-backend-tim56.onrender.com/auth/login';
+    const LOGIN_URL = `${apiUrl}/auth/login`;
     const ROLE = "user";
 
     const [loggedIn, setLoggedIn] = useState(false);
@@ -69,7 +71,7 @@ window.location.reload();
 
     const handleManagerApp = () => {
         Cookies.remove('jwt');
-        window.location.href = "https://pos-manager-app-tim56.vercel.app/";
+        window.location.href = `${redirectUrl}`;
     }
 
     return (

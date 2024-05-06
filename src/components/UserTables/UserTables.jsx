@@ -6,6 +6,8 @@ import Home from '../Home/Home.jsx'
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
+const apiUrl = import.meta.env.VITE_REACT_API_URL;
+
 const UserTables = () => {
     const [assignedTables, setAssignedTables] = useState([]);
     const [otherTables, setOtherTables] = useState([]);
@@ -37,7 +39,7 @@ const UserTables = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/location/${locationId}/tables`, null, headers)
+            fetchData('GET', `${apiUrl}/location/${locationId}/tables`, null, headers)
                 .then(response => {
                     const assigned = response.filter(table => parseInt(table.UserId) === parseInt(userId));
                     const others = response.filter(table => parseInt(table.UserId) !== parseInt(userId));
@@ -111,7 +113,7 @@ const UserTables = () => {
         const requestBody = {
             tables: selectedTables
         };
-        fetchData('POST', 'https://pos-app-backend-tim56.onrender.com/user/tables', requestBody, headers)
+        fetchData('POST', `${apiUrl}/user/tables`, requestBody, headers)
             .then(() => {
                 setIsLoading(false);
                 setSelectedTables([]);
@@ -131,7 +133,7 @@ const UserTables = () => {
         const requestBody = {
             tables: selectedUnassignTables
         };
-        fetchData('DELETE', 'https://pos-app-backend-tim56.onrender.com/user/tables', requestBody, headers)
+        fetchData('DELETE', `${apiUrl}/user/tables`, requestBody, headers)
             .then(() => {
                 setIsLoading(false);
                 fetchTables();

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Header.css';
 import Cookies from 'js-cookie';
 import Login from '../Login/Login';
+const apiUrl = import.meta.env.VITE_REACT_API_URL;
 
 const Header = () => {
     const [loggedIn, setLoggedIn] = useState(true);
@@ -19,7 +20,7 @@ const Header = () => {
                 const requestBody = {
                     tables: assignedTableIdsArray
                 };
-                fetch('https://pos-app-backend-tim56.onrender.com/user/tables', {
+                fetch(`${apiUrl}/user/tables`, {
                     method: 'DELETE',
                     headers: headers,
                     body: JSON.stringify(requestBody)

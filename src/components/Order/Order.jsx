@@ -15,6 +15,8 @@ import { FaPrint } from 'react-icons/fa';
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 
+const apiUrl = import.meta.env.VITE_REACT_API_URL;
+
 const Order = () => {
     const [tableVisible, settableVisible] = useState(true);
     const [orders, setOrders] = useState([]);
@@ -83,7 +85,7 @@ const Order = () => {
                 const headers = {
                     Authorization: token()
                 };
-                const storages = await fetchData('GET', `https://pos-app-backend-tim56.onrender.com/storage`, null, headers);
+                const storages = await fetchData('GET', `${apiUrl}/storage`, null, headers);
                 const matchingStorage = storages.find(storage => storage.LocationId === parseInt(locationId));
                 const endOfToday = new Date();
                 endOfToday.setHours(23, 59, 59, 999);
@@ -111,10 +113,10 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order/location/${locationId}`, null, headers)
+            fetchData('GET', `${apiUrl}/purchase-order/location/${locationId}`, null, headers)
                 .then(response1 => {
                    
-                    fetchData('GET', 'https://pos-app-backend-tim56.onrender.com/location/' + Cookies.get('location') + '/tables', null, headers).then(response => {
+                    fetchData('GET', `${apiUrl}/location/` + Cookies.get('location') + '/tables', null, headers).then(response => {
 
 
                         
@@ -168,7 +170,7 @@ const Order = () => {
                 Authorization: token()
             };
 
-            await fetchData('PUT', 'https://pos-app-backend-tim56.onrender.com/purchase-order/status/' + order.id, { status: "finished" }, headers)
+            await fetchData('PUT', `${apiUrl}/purchase-order/status/` + order.id, { status: "finished" }, headers)
             const updatedOrders = orders.map(ord => {
                 if (ord.id === order.id) {
                     return { ...ord, status: "finished" };
@@ -187,7 +189,7 @@ const Order = () => {
                         }
                     }))
                 };
-                const checkoutResponse = await fetchData('POST', 'https://pos-app-backend-tim56.onrender.com/pos/checkout', checkoutRequest, headers);
+                const checkoutResponse = await fetchData('POST', `${apiUrl}/pos/checkout`, checkoutRequest, headers);
                
             }
         } catch (error) {
@@ -202,7 +204,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            const items = await fetchData('GET', `https://pos-app-backend-tim56.onrender.com/purchase-order/${order.id}`, null, headers)
+            const items = await fetchData('GET', `${apiUrl}/purchase-order/${order.id}`, null, headers)
             setSelectedOrder(items);
             console.log(items);
         }
@@ -218,7 +220,7 @@ const Order = () => {
                 const headers = {
                     Authorization: token()
                 };
-                const url = `https://pos-app-backend-tim56.onrender.com/storage/${storageId}/items`;
+                const url = `${apiUrl}/storage/${storageId}/items`;
                 const response = await fetchData('GET', url, null, headers);
                 console.log("Res ", response)
                 setItems(response)
@@ -227,7 +229,7 @@ const Order = () => {
                 const headers = {
                     Authorization: token()
                 };
-                const url = `https://pos-app-backend-tim56.onrender.com/item`;
+                const url = `${apiUrl}/item`;
                 const response = await fetchData('GET', url, null, headers);
                 const filteredResponse = response.filter(item => {
                     return item.Location && item.Location.id === parseInt(locationId);
@@ -310,7 +312,7 @@ const Order = () => {
             const headers = {
                 Authorization: token()
             };
-            fetchData('GET', `https://pos-app-backend-tim56.onrender.com/location/${locationId}/tables`, null, headers)
+            fetchData('GET', `${apiUrl}/location/${locationId}/tables`, null, headers)
                 .then(response => {
                     const assignedToLoggedUser = response.filter(table => parseInt(table.UserId) === parseInt(userId));
                     setTables(assignedToLoggedUser)
@@ -344,7 +346,7 @@ const Order = () => {
             };
             console.log("DATA")
             console.log(requestData)
-            const url = `https://pos-app-backend-tim56.onrender.com/purchase-order/`;
+            const url = `${apiUrl}/purchase-order/`;
             const response = await fetchData('POST', url, requestData, headers);
             setItemsFromOrder([]);
             setTableId('');
@@ -358,7 +360,7 @@ const Order = () => {
     const printInvoice = async (order) => {
         try {
           
-            const url = `https://pos-app-backend-tim56.onrender.com/purchase-order/${order.id}`;
+            const url = `${apiUrl}/purchase-order/${order.id}`;
 const response1=await fetch(url, {
     method: 'GET',
     headers: {
@@ -367,7 +369,7 @@ const response1=await fetch(url, {
         }});         
         const data = await response1.json(); 
         console.log(data); 
-                    const response = await fetch('https://pos-app-backend-tim56.onrender.com/purchase-order/invoice-pdf', {
+                    const response = await fetch(`${apiUrl}/purchase-order/invoice-pdf`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
