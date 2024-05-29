@@ -18,17 +18,19 @@ const UserTables = () => {
         return Cookies.get("jwt");
     }
 
-    const selectTable = (table) => {
-        setSelectedTable(selectedTable === table ? null : table);
-    }
-
-    const selectUnassignTable = (table) => {
-        setSelectedUnassignTable(selectedUnassignTable === table ? null : table);
-    }
 
     useEffect(() => {
         fetchTables();
     }, []);
+
+    useEffect(() => {
+        handleAssignYourself()
+    }, [selectedTables]);
+
+    useEffect(() => {
+        handleUnassignTable()
+    }, [selectedUnassignTables]);
+
 
     const fetchTables = async () => {
         const locationId = localStorage.getItem('locationId');
@@ -77,31 +79,7 @@ const UserTables = () => {
         }
     };
 
-    const handleCheckboxChange = (tableId) => {
-
-        setSelectedTables(prevSelectedTables => {
-            if (prevSelectedTables.includes(tableId)) {
-
-                return prevSelectedTables.filter(id => id !== tableId);
-            } else {
-                return [...prevSelectedTables, tableId];
-            }
-        });
-    }
-
-    const handleUnassignTableCheck = (tableId) => {
-
-
-
-
-        setSelectedUnassignTables(prevSelectedUnassignTables => {
-            if (prevSelectedUnassignTables.includes(tableId)) {
-                return prevSelectedUnassignTables.filter(id => id !== tableId);
-            } else {
-                return [...prevSelectedUnassignTables, tableId];
-            }
-        });
-    }
+   
 
     const handleAssignYourself = () => {
         setIsLoading(true);
@@ -141,7 +119,6 @@ const UserTables = () => {
                 setIsLoading(false);
             });
     }
-
     return (
         <Home>
             <>
@@ -162,32 +139,21 @@ const UserTables = () => {
                                     style={{
                                         backgroundColor: backgroundColor,
                                         padding: 40,
-                                        cursor: 'pointer', 
+                                        cursor: 'pointer',
                                     }}
                                     onClick={() => {
                                         if (table.UserId == null) {
-
-                                            handleCheckboxChange(table.id)
-                                            selectTable(table)
+                                            setSelectedTables([table.id])
                                         }
                                     }
-                                    } 
+                                    }
                                 >
                                     {table.name}
                                 </Paper>
                             </Grid>
                         );
                     })}
-
-
-
-
                 </Grid>
-
-
-                <div>
-                    <button className='active-buttons' onClick={handleAssignYourself} disabled={selectedTables.length === 0 || isLoading}>Assign Yourself</button>
-                </div>
 
 
                 <div>
@@ -195,14 +161,8 @@ const UserTables = () => {
 
                 </div>
 
-
-
-
-
-
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                     {assignedTables.map((table, index) => {
-
                         let bgColor = "springgreen"
 
                         if (selectedUnassignTables.includes(table.id)) {
@@ -217,13 +177,9 @@ const UserTables = () => {
                                         cursor: 'pointer',
                                     }}
                                     onClick={() => {
-
-
-                                        handleUnassignTableCheck(table.id)
-                                        selectUnassignTable(table)
+                                        setSelectedUnassignTables([table.id])
                                     }
-
-                                    } 
+                                    }
                                 >
                                     {table.name}
                                 </Paper>
@@ -231,9 +187,7 @@ const UserTables = () => {
                         );
                     })}
                 </Grid>
-                <div>
-                    <button className='active-buttons ' onClick={handleUnassignTable} disabled={selectedUnassignTables.length === 0 || isLoading}>Unassign Yourself</button>
-                </div>
+                
             </></Home>
     );
 };
